@@ -11,6 +11,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        # All Histories
+        fetch-depth: 0
 
     - name: Install GPG
       run: |
@@ -19,13 +22,14 @@ jobs:
 
     - name: Fetch all commits for the PR
       run: |
-        # Fetching the PR's commits. This ensures we have all commits locally.
-        git fetch origin +refs/pull/${{ github.event.number }}/head
+        # Ensure all branches and commits
+        git fetch origin main:refs/remotes/origin/main
+        git fetch origin pull/${{ github.event.number }}/head:refs/remotes/origin/pr/${{ github.event.number }}/head
 
     - name: Verify GPG signatures
       run: |
         # Get the list of commits in the PR
-        PR_COMMITS=$(git rev-list origin/main..FETCH_HEAD)
+        PR_COMMITS=$(git rev-list origin/main..origin/pr/${{ github.event.number }})
 
         # Iterate over each commit and verify its GPG signature
         for commit_hash in $PR_COMMITS; do

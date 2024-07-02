@@ -1,0 +1,39 @@
+name: Verify Commits on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install GPG
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gnupg
+
+    - name: Fetch all commits for the PR
+      run: |
+        # Fetching the PR's commits. This ensures we have all commits locally.
+        git fetch origin +refs/pull/${{ github.event.number }}/head
+
+    - name: Verify GPG signatures
+      run: |
+        # Get the list of commits in the PR
+        PR_COMMITS=$(git rev-list origin/main..FETCH_HEAD)
+
+        # Iterate over each commit and verify its GPG signature
+        for commit_hash in $PR_COMMITS; do
+          echo "Verifying commit $commit_hash..."
+          if git verify-commit $commit_hash; then
+            echo "Commit $commit_hash is verified."
+          else
+            echo "Commit $commit_hash is not verified."
+            exit 1
+          fi
+        done

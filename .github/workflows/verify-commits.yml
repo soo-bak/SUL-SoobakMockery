@@ -1,4 +1,4 @@
-name: Verify Commits on Pull Request
+name: Verify Commits
 
 on:
   pull_request:

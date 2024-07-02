@@ -12,12 +12,16 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
-        fetch-depth: 0
+        fetch-depth: 0  # 모든 히스토리를 가져옵니다.
 
     - name: Install GPG
       run: |
         sudo apt-get update
         sudo apt-get install -y gnupg
+
+    - name: Import GPG public key from secret
+      run: |
+        echo "${{ secrets.GPG_PUBLIC_KEY }}" | gpg --import
 
     - name: Fetch all commits for the PR
       run: |

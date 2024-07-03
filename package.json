@@ -1,0 +1,12 @@
+{
+  "name": "com.soo-bak.sul",
+  "displayName": "SoobakUnityLibrary",
+  "author": { "name": "soo:bak", "url": "https://soo-bak.github.io/" },
+  "version": "0.1.0",
+  "unity": "2022.3",
+  "description": "Various Unity Library used by Soo:bak.",
+  "keywords": [ "soo:bak", "soo-bak", "Unity" ],
+  "license": "MIT",
+  "category": "Library",
+  "dependencies": {}
+}

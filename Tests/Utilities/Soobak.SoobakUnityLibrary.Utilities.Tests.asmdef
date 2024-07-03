@@ -1,11 +1,10 @@
 {
-    "name": "Soobak.SoobakUnityLibrary.Editor.Tests",
-    "rootNamespace": "",
+    "name": "Soobak.SoobakUnityLibrary.Utilities.Tests",
+    "rootNamespace": "SUL",
     "references": [
         "GUID:27619889b8ba8c24980f49ee34dbb44a",
         "GUID:0acc523941302664db1f4e527237feb3",
-        "GUID:c0c1ad89ce4ae974b96dcdc1ba2f06c6",
-        "GUID:2fd5810ee7bc8c442a957e228abad3c0"
+        "GUID:c28f4d3c441669c4fbc0c6afce83433e"
     ],
     "includePlatforms": [
         "Editor"

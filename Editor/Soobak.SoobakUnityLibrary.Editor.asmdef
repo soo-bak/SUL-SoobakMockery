@@ -2,7 +2,8 @@
     "name": "Soobak.SoobakUnityLibrary.Editor",
     "rootNamespace": "",
     "references": [
-        "Soobak.SoobakUnityLibrary"
+        "Soobak.SoobakUnityLibrary",
+        "Soobak.SoobakUnityLibrary.Utilities"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

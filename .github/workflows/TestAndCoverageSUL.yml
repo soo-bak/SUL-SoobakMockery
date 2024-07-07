@@ -14,14 +14,19 @@ jobs:
       matrix:
         projectPath:
           - .
-        unityVersion:
-          - 2022.3.21f1
+        unityVersion: [2022.3.21f1]
         testMode:
           - playmode
           - editmode
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Get runner's uid and gid
+        id: runner-info
+        run: |
+          echo "::set-output name=uid::$(id -u)"
+          echo "::set-output name=gid::$(id -g)"
 
       - name: Run Unity Tests
         uses: game-ci/unity-test-runner@v4

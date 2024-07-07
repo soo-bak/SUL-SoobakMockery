@@ -1,4 +1,4 @@
-name: Test and Coverage for Unity Package
+name: Test and Check Coverage SUL
 
 on:
   pull_request:
@@ -13,8 +13,9 @@ jobs:
       fail-fast: false
       matrix:
         projectPath:
-          - packages/com.yourcompany.yourpackage
-        unityVersion: '2022.3.0f1'
+          - packages/com.soo-bak.sul
+        unityVersion:
+          - 2022.3.21f1
         testMode:
           - playmode
           - editmode
@@ -37,7 +38,7 @@ jobs:
           artifactsPath: ${{ matrix.testMode }}-artifacts
           githubToken: ${{ github.token }}
           checkName: ${{ matrix.testMode }} Test Results
-          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+com.yourcompany.yourpackage.*'
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+com.soo-bak.sul.*'
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v3

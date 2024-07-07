@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using SUL;
 
 // XXX Consider namespace for classification structure in terms of hierarchy.
 namespace SUL_Tests.Utilities {
@@ -15,7 +16,7 @@ namespace SUL_Tests.Utilities {
 
       // Act
       string result = original.Reverse();
-      
+
       // Assert
       Assert.AreEqual(expected, result);
     }

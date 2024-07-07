@@ -101,7 +101,7 @@ jobs:
         if: env.SUMMARY_EXISTS == 'true'
         run: npm install xml2js @actions/github
 
-      - name: Create and Run Node.js Script
+       - name: Create Node.js Script
         if: env.SUMMARY_EXISTS == 'true'
         run: |
           echo "const fs = require('fs');
@@ -139,6 +139,9 @@ jobs:
               body: commentBody
             });
           });" > script.js
-          node script.js
+
+      - name: Run Node.js Script
+        if: env.SUMMARY_EXISTS == 'true'
+        run: node script.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

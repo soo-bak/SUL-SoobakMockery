@@ -87,37 +87,39 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Install xml2js
-        run: npm install xml2js
+      - name: Install Dependencies
+        run: npm install xml2js @actions/github
 
-      - name: Comment on PR with Coverage Results
+      - name: Create and Run Node.js Script
         run: |
           echo "const fs = require('fs');
           const xml2js = require('xml2js');
           const parser = new xml2js.Parser();
           const xml = fs.readFileSync('CodeCoverage/Summary.xml', 'utf8');
+          const { context, getOctokit } = require('@actions/github');
+          const github = getOctokit(process.env.GITHUB_TOKEN);
+
           parser.parseString(xml, (err, result) => {
             if (err) throw err;
             const summary = result.CoverageReport.Summary[0];
-            const commentBody = `
+            const commentBody = \`
               ## Code Coverage Summary
-              - **Generated on**: ${summary.Generatedon[0]}
-              - **Parser**: ${summary.Parser[0]}
-              - **Assemblies**: ${summary.Assemblies[0]}
-              - **Classes**: ${summary.Classes[0]}
-              - **Files**: ${summary.Files[0]}
-              - **Covered Lines**: ${summary.Coveredlines[0]}
-              - **Uncovered Lines**: ${summary.Uncoveredlines[0]}
-              - **Coverable Lines**: ${summary.Coverallines[0]}
-              - **Total Lines**: ${summary.Totallines[0]}
-              - **Line Coverage**: ${summary.Linecoverage[0]}%
-              - **Covered Branches**: ${summary.Coveredbranches[0]}
-              - **Total Branches**: ${summary.Totalbranches[0]}
-              - **Covered Methods**: ${summary.Coveredmethods[0]}
-              - **Total Methods**: ${summary.Totalmethods[0]}
-              - **Method Coverage**: ${summary.Methodcoverage[0]}%
-            `;
-            const { context, github } = require('@actions/github');
+              - **Generated on**: \${summary.Generatedon[0]}
+              - **Parser**: \${summary.Parser[0]}
+              - **Assemblies**: \${summary.Assemblies[0]}
+              - **Classes**: \${summary.Classes[0]}
+              - **Files**: \${summary.Files[0]}
+              - **Covered Lines**: \${summary.Coveredlines[0]}
+              - **Uncovered Lines**: \${summary.Uncoveredlines[0]}
+              - **Coverable Lines**: \${summary.Coverallines[0]}
+              - **Total Lines**: \${summary.Totallines[0]}
+              - **Line Coverage**: \${summary.Linecoverage[0]}%
+              - **Covered Branches**: \${summary.Coveredbranches[0]}
+              - **Total Branches**: \${summary.Totalbranches[0]}
+              - **Covered Methods**: \${summary.Coveredmethods[0]}
+              - **Total Methods**: \${summary.Totalmethods[0]}
+              - **Method Coverage**: \${summary.Methodcoverage[0]}%
+            \`;
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

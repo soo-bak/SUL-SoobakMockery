@@ -44,9 +44,9 @@ jobs:
           echo "::set-output name=uid::$(id -u)"
           echo "::set-output name=gid::$(id -g)"
 
-      - name: Run Unity Tests
+      - name: Run Unity Tests - ${{ matrix.testMode }}
         uses: game-ci/unity-test-runner@v4
-        id: tests
+        id: tests-${{ matrix.testMode }}
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -61,16 +61,23 @@ jobs:
           checkName: ${{ matrix.testMode }} Test Results
           coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Soobak.SoobakUnityLibrary.*'
 
-      - name: Upload Test Results
+      - name: Upload Test Results - ${{ matrix.testMode }}
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Test results for ${{ matrix.testMode }}
-          path: ${{ steps.tests.outputs.artifactsPath }}
+          path: ${{ steps.tests-${{ matrix.testMode }}.outputs.artifactsPath }}
 
-      - name: Upload Coverage Results
+      - name: Upload Coverage Results - ${{ matrix.testMode }}
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Coverage results for ${{ matrix.testMode }}
-          path: ${{ steps.tests.outputs.coveragePath }}
+          path: ${{ steps.tests-${{ matrix.testMode }}.outputs.coveragePath }}
+
+      - name: Upload HTML Coverage Report - ${{ matrix.testMode }}
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: HTML coverage report for ${{ matrix.testMode }}
+          path: ${{ steps.tests-${{ matrix.testMode }}.outputs.coveragePath }}/Report/html

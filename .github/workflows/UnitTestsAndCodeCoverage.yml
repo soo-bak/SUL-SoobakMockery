@@ -81,3 +81,4 @@ jobs:
         with:
           name: Badge coverage report for ${{ matrix.testMode }}
           path: CodeCoverage/Report/badge_linecoverage.svg
+          compression-level: 0

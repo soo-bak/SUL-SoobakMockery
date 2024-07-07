@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         projectPath:
-          - packages/com.soo-bak.sul
+          - /
         unityVersion:
           - 2022.3.21f1
         testMode:

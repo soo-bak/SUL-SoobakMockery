@@ -133,13 +133,23 @@ jobs:
           }
 
           function createCommentBody(summary) {
-            const lineCoverage = summary.Linecoverage[0] === "100" ?
-              `\\textbf{\\color{green}{\${summary.Linecoverage[0]}\\%}}` :
-              `\\textbf{\\color{red}{\${summary.Linecoverage[0]}\\%}}`;
+            const lineCoverage = summay.Linecoverage[0];
+            const methodCoverage = summary.Methodcoverage[0];
 
-            const methodCoverage = summary.Methodcoverage[0] === "100" ?
-              `\\textbf{\\color{green}{\${summary.Methodcoverage[0]}\\%}}` :
-              `\\textbf{\\color{red}{\${summary.Methodcoverage[0]}\\%}}`;
+            let formattedLineCoverage;
+            let formattedMethodCoverage;
+
+            if (lineCoverage === "100") {
+              foformattedLineCoverage = `\\textbf{\\color{green}{\${summary.Linecoverage[0]}\\%}}`;
+            } else{
+              foformattedLineCoverage = `\\textbf{\\color{red}{\${summary.Linecoverage[0]}\\%}}`;
+            }
+
+            if (methodCoverage === "100") {
+              formattedMethodCoverage = `\\textbf{\\color{green}{\${summary.MethodCoverage[0]}\\%}}`;
+            } else{
+              formattedMethodCoverage = `\\textbf{\\color{red}{\${summary.MethodCoverage[0]}\\%}}`;
+            }
 
             return `
               ## 🍉 Code Coverage Summary 🧐
@@ -154,10 +164,10 @@ jobs:
               | Uncovered Lines      | \${summary.Uncoveredlines[0]} |
               | Coverable Lines      | \${summary.Coverablelines[0]} |
               | Total Lines          | \${summary.Totallines[0]}     |
-              | Line Coverage        | \${lineCoverage}              |
+              | Line Coverage        | \${foformattedLineCoverage}   |
               | Covered Methods      | \${summary.Coveredmethods[0]} |
               | Total Methods        | \${summary.Totalmethods[0]}   |
-              | Method Coverage      | \${methodCoverage}            |
+              | Method Coverage      | \${formattedMethodCoverage}   |
 
               ---
             `;

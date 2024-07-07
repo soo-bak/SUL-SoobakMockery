@@ -137,12 +137,12 @@ jobs:
             const methodCoverage = summary.Methodcoverage[0];
 
             let formattedLineCoverage = lineCoverage === "100"
-              ? `\\textbf{\\color{green}{${lineCoverage}\\%}}`
-              : `\\textbf{\\color{red}{${lineCoverage}\\%}}`;
+              ? `\\\\textbf{\\\\color{green}{${lineCoverage}\\\\%}}`
+              : `\\\\textbf{\\\\color{red}{${lineCoverage}\\\\%}}`;
 
             let formattedMethodCoverage = methodCoverage === "100"
-              ? `\\textbf{\\color{green}{${methodCoverage}\\%}}`
-              : `\\textbf{\\color{red}{${methodCoverage}\\%}}`;
+              ? `\\\\textbf{\\\\color{green}{${methodCoverage}\\\\%}}`
+              : `\\\\textbf{\\\\color{red}{${methodCoverage}\\\\%}}`;
 
             return `
               ## 🍉 Code Coverage Summary 🧐

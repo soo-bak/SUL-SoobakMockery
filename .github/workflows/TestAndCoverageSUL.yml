@@ -27,7 +27,8 @@ jobs:
 
       - name: Move package to temp_package directory
         run: |
-          mv * temp_package
+          shopt -s extglob
+          mv !(temp_package|.github) temp_package/
           mv .github temp_package/.github
 
       - name: Verify package.json existence

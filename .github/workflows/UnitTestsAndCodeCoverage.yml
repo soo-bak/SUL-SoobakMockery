@@ -82,20 +82,31 @@ jobs:
           name: Badge coverage report for ${{ matrix.testMode }}
           path: CodeCoverage/Report/badge_linecoverage.svg
 
+      - name: Check if Summary.xml Exists
+        id: check_summary
+        run: |
+          if [ -f CodeCoverage/Report/Summary.xml ]; then
+            echo "SUMMARY_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "SUMMARY_EXISTS=false" >> $GITHUB_ENV
+
       - name: Setup Node.js
+        if: env.SUMMARY_EXISTS == 'true'
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
       - name: Install Dependencies
+        if: env.SUMMARY_EXISTS == 'true'
         run: npm install xml2js @actions/github
 
       - name: Create and Run Node.js Script
+        if: env.SUMMARY_EXISTS == 'true'
         run: |
           echo "const fs = require('fs');
           const xml2js = require('xml2js');
           const parser = new xml2js.Parser();
-          const xml = fs.readFileSync('CodeCoverage/Summary.xml', 'utf8');
+          const xml = fs.readFileSync('CodeCoverage/Report/Summary.xml', 'utf8');
           const { context, getOctokit } = require('@actions/github');
           const github = getOctokit(process.env.GITHUB_TOKEN);
 

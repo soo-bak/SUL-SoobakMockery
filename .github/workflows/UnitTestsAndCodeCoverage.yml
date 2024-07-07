@@ -134,12 +134,12 @@ jobs:
 
           function createCommentBody(summary) {
             const lineCoverage = summary.Linecoverage[0] === "100" ?
-              `\$\\textbf{\\color{green}{\${summary.Linecoverage[0]}\\%}}` :
-              `\$\\textbf{\\color{red}{\${summary.Linecoverage[0]}\\%}}`;
+              `\\textbf{\\color{green}{\${summary.Linecoverage[0]}\\%}}` :
+              `\\textbf{\\color{red}{\${summary.Linecoverage[0]}\\%}}`;
 
             const methodCoverage = summary.Methodcoverage[0] === "100" ?
-              `\$\\textbf{\\color{green}{\${summary.Methodcoverage[0]}\\%}}` :
-              `\$\\textbf{\\color{red}{\${summary.Methodcoverage[0]}\\%}}`;
+              `\\textbf{\\color{green}{\${summary.Methodcoverage[0]}\\%}}` :
+              `\\textbf{\\color{red}{\${summary.Methodcoverage[0]}\\%}}`;
 
             return `
               ## 🍉 Code Coverage Summary 🧐

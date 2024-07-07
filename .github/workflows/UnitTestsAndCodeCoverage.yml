@@ -133,22 +133,22 @@ jobs:
           }
 
           function createCommentBody(summary) {
-            const lineCoverage = summay.Linecoverage[0];
+            const lineCoverage = summary.Linecoverage[0];
             const methodCoverage = summary.Methodcoverage[0];
 
             let formattedLineCoverage;
             let formattedMethodCoverage;
 
             if (lineCoverage === "100") {
-              formattedLineCoverage = `\\textbf{\\color{green}{\${summary.Linecoverage[0]}\\%}}`;
-            } else{
-              formattedLineCoverage = `\\textbf{\\color{red}{\${summary.Linecoverage[0]}\\%}}`;
+              formattedLineCoverage = `\\textbf{\\color{green}{${summary.Linecoverage[0]}\\%}}`;
+            } else {
+              formattedLineCoverage = `\\textbf{\\color{red}{${summary.Linecoverage[0]}\\%}}`;
             }
 
             if (methodCoverage === "100") {
-              formattedMethodCoverage = `\\textbf{\\color{green}{\${summary.MethodCoverage[0]}\\%}}`;
-            } else{
-              formattedMethodCoverage = `\\textbf{\\color{red}{\${summary.MethodCoverage[0]}\\%}}`;
+              formattedMethodCoverage = `\\textbf{\\color{green}{${summary.Methodcoverage[0]}\\%}}`;
+            } else {
+              formattedMethodCoverage = `\\textbf{\\color{red}{${summary.Methodcoverage[0]}\\%}}`;
             }
 
             return `

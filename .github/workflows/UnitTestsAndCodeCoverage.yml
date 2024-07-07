@@ -75,9 +75,9 @@ jobs:
           name: Coverage results for ${{ matrix.testMode }}
           path: CodeCoverage/
 
-      - name: Upload HTML Coverage Report
+      - name: Upload Badge Coverage Report
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: HTML coverage report for ${{ matrix.testMode }}
-          path: CodeCoverage/Report/html
+          name: Badge coverage report for ${{ matrix.testMode }}
+          path: CodeCoverage/Report/badge_linecoverage.svg

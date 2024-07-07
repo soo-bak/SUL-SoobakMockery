@@ -1,4 +1,4 @@
-name: Verify Commits
+name: 🍉 Verify Commits
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
-        fetch-depth: 0  # 모든 히스토리를 가져옵니다.
+        fetch-depth: 0  # fetch all histories
 
     - name: Install GPG
       run: |

@@ -140,9 +140,9 @@ jobs:
             let formattedMethodCoverage;
 
             if (lineCoverage === "100") {
-              foformattedLineCoverage = `\\textbf{\\color{green}{\${summary.Linecoverage[0]}\\%}}`;
+              formattedLineCoverage = `\\textbf{\\color{green}{\${summary.Linecoverage[0]}\\%}}`;
             } else{
-              foformattedLineCoverage = `\\textbf{\\color{red}{\${summary.Linecoverage[0]}\\%}}`;
+              formattedLineCoverage = `\\textbf{\\color{red}{\${summary.Linecoverage[0]}\\%}}`;
             }
 
             if (methodCoverage === "100") {

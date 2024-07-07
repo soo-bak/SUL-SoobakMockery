@@ -116,7 +116,7 @@ jobs:
             try {
               const summary = await parseXML();
               const commentBody = createCommentBody(summary);
-              await updateOrCreateComment(commentBody);
+              await deleteExistingCommentAndCreateNew(commentBody);
             } catch (error) {
               console.error('Error:', error);
               process.exit(1);
@@ -133,27 +133,37 @@ jobs:
           }
 
           function createCommentBody(summary) {
-            return \`
-              ## Code Coverage Summary
-              - **Generated on**: \${summary.Generatedon[0]}
-              - **Parser**: \${summary.Parser[0]}
-              - **Assemblies**: \${summary.Assemblies[0]}
-              - **Classes**: \${summary.Classes[0]}
-              - **Files**: \${summary.Files[0]}
-              - **Covered Lines**: \${summary.Coveredlines[0]}
-              - **Uncovered Lines**: \${summary.Uncoveredlines[0]}
-              - **Coverable Lines**: \${summary.Coverablelines[0]}
-              - **Total Lines**: \${summary.Totallines[0]}
-              - **Line Coverage**: \${summary.Linecoverage[0]}%
-              - **Covered Branches**: \${summary.Coveredbranches[0]}
-              - **Total Branches**: \${summary.Totalbranches[0]}
-              - **Covered Methods**: \${summary.Coveredmethods[0]}
-              - **Total Methods**: \${summary.Totalmethods[0]}
-              - **Method Coverage**: \${summary.Methodcoverage[0]}%
+            const lineCoverage = \${summary.Linecoverage[0]} === "100" ?
+              `$\\textbf{\\color{green}{\${summary.Linecoverage[0]}\\%}}$` :
+              `$\\textbf{\\color{red}{\${summary.Linecoverage[0]}\\%}}$`;
+
+            const methodCoverage = \${summary.Methodcoverage[0]} === "100" ?
+              `$\\textbf{\\color{green}{\${summary.Methodcoverage[0]}\\%}}$` :
+              `$\\textbf{\\color{red}{\${summary.Methodcoverage[0]}\\%}}$`;
+
+            return `
+              ## 🍉 Code Coverage Summary 🧐
+
+              | Metric               | Value                        |
+              |----------------------|------------------------------|
+              | Generated on         | \${summary.Generatedon[0]}    |
+              | Assemblies           | \${summary.Assemblies[0]}     |
+              | Classes              | \${summary.Classes[0]}        |
+              | Files                | \${summary.Files[0]}          |
+              | Covered Lines        | \${summary.Coveredlines[0]}   |
+              | Uncovered Lines      | \${summary.Uncoveredlines[0]} |
+              | Coverable Lines      | \${summary.Coverablelines[0]} |
+              | Total Lines          | \${summary.Totallines[0]}     |
+              | Line Coverage        | \${lineCoverage}              |
+              | Covered Methods      | \${summary.Coveredmethods[0]} |
+              | Total Methods        | \${summary.Totalmethods[0]}   |
+              | Method Coverage      | \${methodCoverage}            |
+
+              ---
             \`;
           }
 
-          async function updateOrCreateComment(body) {
+          async function deleteExistingCommentAndCreateNew(body) {
             const { data: comments } = await github.rest.issues.listComments({
               ...context.repo,
               issue_number: context.issue.number,
@@ -165,20 +175,19 @@ jobs:
             );
 
             if (botComment) {
-              await github.rest.issues.updateComment({
+              await github.rest.issues.deleteComment({
                 ...context.repo,
                 comment_id: botComment.id,
-                body,
               });
-              console.log('Updated existing comment');
-            } else {
-              await github.rest.issues.createComment({
-                ...context.repo,
-                issue_number: context.issue.number,
-                body,
-              });
-              console.log('Created new comment');
+              console.log('Deleted existing comment');
             }
+
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+            console.log('Created new comment');
           }
 
           run();

@@ -1,4 +1,4 @@
-name: Test and Check Coverage SUL
+name: Unit Tests And Code Coverage
 
 on:
   pull_request:

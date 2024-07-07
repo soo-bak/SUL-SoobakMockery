@@ -1,4 +1,4 @@
-name: Test and Coverage for Unity Package
+name: Test and Coverage SUL
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         projectPath:
-          - /com.soo-bak.sul
+          - /Packages/com.soo-bak.sul
         unityVersion:
           - 2022.3.21f1
         testMode:

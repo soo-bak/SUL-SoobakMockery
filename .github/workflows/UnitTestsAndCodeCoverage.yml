@@ -136,38 +136,31 @@ jobs:
             const lineCoverage = summary.Linecoverage[0];
             const methodCoverage = summary.Methodcoverage[0];
 
-            let formattedLineCoverage;
-            let formattedMethodCoverage;
+            let formattedLineCoverage = lineCoverage === "100"
+              ? `\\textbf{\\color{green}{${lineCoverage}\\%}}`
+              : `\\textbf{\\color{red}{${lineCoverage}\\%}}`;
 
-            if (lineCoverage === "100") {
-              formattedLineCoverage = `\\textbf{\\color{green}{${summary.Linecoverage[0]}\\%}}`;
-            } else {
-              formattedLineCoverage = `\\textbf{\\color{red}{${summary.Linecoverage[0]}\\%}}`;
-            }
-
-            if (methodCoverage === "100") {
-              formattedMethodCoverage = `\\textbf{\\color{green}{${summary.Methodcoverage[0]}\\%}}`;
-            } else {
-              formattedMethodCoverage = `\\textbf{\\color{red}{${summary.Methodcoverage[0]}\\%}}`;
-            }
+            let formattedMethodCoverage = methodCoverage === "100"
+              ? `\\textbf{\\color{green}{${methodCoverage}\\%}}`
+              : `\\textbf{\\color{red}{${methodCoverage}\\%}}`;
 
             return `
               ## 🍉 Code Coverage Summary 🧐
 
               | Metric               | Value                        |
               |----------------------|------------------------------|
-              | Generated on         | \${summary.Generatedon[0]}    |
-              | Assemblies           | \${summary.Assemblies[0]}     |
-              | Classes              | \${summary.Classes[0]}        |
-              | Files                | \${summary.Files[0]}          |
-              | Covered Lines        | \${summary.Coveredlines[0]}   |
-              | Uncovered Lines      | \${summary.Uncoveredlines[0]} |
-              | Coverable Lines      | \${summary.Coverablelines[0]} |
-              | Total Lines          | \${summary.Totallines[0]}     |
-              | Line Coverage        | \${foformattedLineCoverage}   |
-              | Covered Methods      | \${summary.Coveredmethods[0]} |
-              | Total Methods        | \${summary.Totalmethods[0]}   |
-              | Method Coverage      | \${formattedMethodCoverage}   |
+              | Generated on         | ${summary.Generatedon[0]}    |
+              | Assemblies           | ${summary.Assemblies[0]}     |
+              | Classes              | ${summary.Classes[0]}        |
+              | Files                | ${summary.Files[0]}          |
+              | Covered Lines        | ${summary.Coveredlines[0]}   |
+              | Uncovered Lines      | ${summary.Uncoveredlines[0]} |
+              | Coverable Lines      | ${summary.Coverablelines[0]} |
+              | Total Lines          | ${summary.Totallines[0]}     |
+              | Line Coverage        | ${formattedLineCoverage}     |
+              | Covered Methods      | ${summary.Coveredmethods[0]} |
+              | Total Methods        | ${summary.Totalmethods[0]}   |
+              | Method Coverage      | ${formattedMethodCoverage}   |
 
               ---
             `;

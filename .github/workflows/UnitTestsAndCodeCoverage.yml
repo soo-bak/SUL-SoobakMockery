@@ -112,10 +112,28 @@ jobs:
           const { context, getOctokit } = require('@actions/github');
           const github = getOctokit(process.env.GITHUB_TOKEN);
 
-          parser.parseString(xml, (err, result) => {
-            if (err) throw err;
-            const summary = result.CoverageReport.Summary[0];
-            const commentBody = \`
+          async function run() {
+            try {
+              const summary = await parseXML();
+              const commentBody = createCommentBody(summary);
+              await updateOrCreateComment(commentBody);
+            } catch (error) {
+              console.error('Error:', error);
+              process.exit(1);
+            }
+          }
+
+          function parseXML() {
+            return new Promise((resolve, reject) => {
+              parser.parseString(xml, (err, result) => {
+                if (err) reject(err);
+                else resolve(result.CoverageReport.Summary[0]);
+              });
+            });
+          }
+
+          function createCommentBody(summary) {
+            return \`
               ## Code Coverage Summary
               - **Generated on**: \${summary.Generatedon[0]}
               - **Parser**: \${summary.Parser[0]}
@@ -133,14 +151,37 @@ jobs:
               - **Total Methods**: \${summary.Totalmethods[0]}
               - **Method Coverage**: \${summary.Methodcoverage[0]}%
             \`;
+          }
 
-            github.rest.issues.createComment({
+          async function updateOrCreateComment(body) {
+            const { data: comments } = await github.rest.issues.listComments({
+              ...context.repo,
               issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: commentBody
             });
-          });
+
+            const botComment = comments.find(comment =>
+              comment.user.login === 'github-actions[bot]' &&
+              comment.body.includes('Code Coverage Summary')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                ...context.repo,
+                comment_id: botComment.id,
+                body,
+              });
+              console.log('Updated existing comment');
+            } else {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+              console.log('Created new comment');
+            }
+          }
+
+          run();
           EOF
 
       - name: Run Node.js Script

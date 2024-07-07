@@ -82,22 +82,28 @@ jobs:
           name: Badge coverage report for ${{ matrix.testMode }}
           path: CodeCoverage/Report/badge_linecoverage.svg
 
-      - name: Comment on PR with Coverage Results
-        uses: actions/github-script@v4
-        if: always()
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          script: |
+          node-version: '14'
+
+      - name: Install xml2js
+        run: npm install xml2js
+
+      - name: Comment on PR with Coverage Results
+        run: |
+          node -e "
             const fs = require('fs');
             const xml2js = require('xml2js');
             const parser = new xml2js.Parser();
             const xml = fs.readFileSync('CodeCoverage/Summary.xml', 'utf8');
-
-            parser.parseString(xml, function (err, result) {
+            parser.parseString(xml, (err, result) => {
               if (err) throw err;
               const summary = result.CoverageReport.Summary[0];
               const commentBody = `
                 ## Code Coverage Summary
                 - **Generated on**: ${summary.Generatedon[0]}
+                - **Parser**: ${summary.Parser[0]}
                 - **Assemblies**: ${summary.Assemblies[0]}
                 - **Classes**: ${summary.Classes[0]}
                 - **Files**: ${summary.Files[0]}
@@ -106,10 +112,13 @@ jobs:
                 - **Coverable Lines**: ${summary.Coverallines[0]}
                 - **Total Lines**: ${summary.Totallines[0]}
                 - **Line Coverage**: ${summary.Linecoverage[0]}%
+                - **Covered Branches**: ${summary.Coveredbranches[0]}
+                - **Total Branches**: ${summary.Totalbranches[0]}
                 - **Covered Methods**: ${summary.Coveredmethods[0]}
                 - **Total Methods**: ${summary.Totalmethods[0]}
                 - **Method Coverage**: ${summary.Methodcoverage[0]}%
               `;
+              const { context, github } = require('@actions/github');
               github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
@@ -117,3 +126,6 @@ jobs:
                 body: commentBody
               });
             });
+          "
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

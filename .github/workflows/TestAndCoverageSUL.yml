@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         projectPath:
-          - .
+          - temp_package
         unityVersion: [2022.3.21f1]
         testMode:
           - playmode
@@ -21,6 +21,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Create temp_package directory
+        run: mkdir temp_package
+
+      - name: Move package to temp_package directory
+        run: |
+          mv * temp_package
+          mv .github temp_package/.github
+
+      - name: Verify package.json existence
+        run: |
+          if [ ! -f temp_package/package.json ]; then
+            echo "package.json not found in temp_package"
+            exit 1
+          fi
 
       - name: Get runner's uid and gid
         id: runner-info
@@ -43,7 +58,7 @@ jobs:
           artifactsPath: ${{ matrix.testMode }}-artifacts
           githubToken: ${{ github.token }}
           checkName: ${{ matrix.testMode }} Test Results
-          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+com.soo-bak.sul.*'
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Soobak.SoobakUnityLibrary.*'
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v3

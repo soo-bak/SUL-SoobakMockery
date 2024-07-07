@@ -164,11 +164,11 @@ jobs:
           function formatCoverage(coverage) {
             const coverageNum = parseFloat(coverage);
             if (coverageNum === 100) {
-              return \`**\${coverageNum}%**`;
+              return \`**\${coverageNum}%**\`;
             } else if (coverageNum >= 80) {
-              return \`_\${coverageNum}%_`;
+              return \`_\${coverageNum}%_\`;
             } else {
-              return \`~~\${coverageNum}%~~`;
+              return \`~~\${coverageNum}%~~\`;
             }
           }
 

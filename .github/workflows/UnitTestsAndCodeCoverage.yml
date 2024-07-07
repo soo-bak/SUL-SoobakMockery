@@ -89,6 +89,7 @@ jobs:
             echo "SUMMARY_EXISTS=true" >> $GITHUB_ENV
           else
             echo "SUMMARY_EXISTS=false" >> $GITHUB_ENV
+          fi
 
       - name: Setup Node.js
         if: env.SUMMARY_EXISTS == 'true'

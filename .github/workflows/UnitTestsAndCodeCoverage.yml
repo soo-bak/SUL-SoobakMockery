@@ -1,0 +1,214 @@
+name: 🧪 Unit Tests And Code Coverage
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  testAllModes:
+    name: Test in ${{ matrix.testMode }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        projectPath:
+          - temp_package
+        unityVersion: [2022.3.21f1]
+        testMode:
+          - playmode
+          - editmode
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create temp_package directory
+        run: mkdir temp_package
+
+      - name: Move package to temp_package directory
+        run: |
+          shopt -s extglob
+          mv !(temp_package|.github) temp_package/
+          mv .github temp_package/.github
+
+      - name: Verify package.json existence
+        run: |
+          if [ ! -f temp_package/package.json ]; then
+            echo "package.json not found in temp_package"
+            exit 1
+          fi
+
+      - name: Get runner's uid and gid
+        id: runner-info
+        run: |
+          echo "uid=$(id -u)" >> $GITHUB_ENV
+          echo "gid=$(id -g)" >> $GITHUB_ENV
+
+      - name: Run Unity Tests
+        uses: game-ci/unity-test-runner@v4
+        id: tests
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          packageMode: true
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
+          testMode: ${{ matrix.testMode }}
+          artifactsPath: ${{ matrix.testMode }}-artifacts
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: ${{ matrix.testMode }} Test Results
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Soobak.SoobakUnityLibrary.*'
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Test results for ${{ matrix.testMode }}
+          path: ${{ matrix.testMode }}-artifacts
+
+      - name: Upload Coverage Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Coverage results for ${{ matrix.testMode }}
+          path: CodeCoverage/
+
+      - name: Upload Badge Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Badge coverage report for ${{ matrix.testMode }}
+          path: CodeCoverage/Report/badge_linecoverage.svg
+
+      - name: Check if Summary.xml Exists
+        id: check_summary
+        run: |
+          if [ -f CodeCoverage/Report/Summary.xml ]; then
+            echo "SUMMARY_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "SUMMARY_EXISTS=false" >> $GITHUB_ENV
+          fi
+
+      - name: Setup Node.js
+        if: env.SUMMARY_EXISTS == 'true'
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        if: env.SUMMARY_EXISTS == 'true'
+        run: npm install xml2js @actions/github@latest
+
+      - name: Create Node.js Script
+        if: env.SUMMARY_EXISTS == 'true'
+        run: |
+          cat << EOF > script.js
+          const fs = require('fs');
+          const xml2js = require('xml2js');
+          const parser = new xml2js.Parser();
+          const xml = fs.readFileSync('CodeCoverage/Report/Summary.xml', 'utf8');
+          const { context, getOctokit } = require('@actions/github');
+          const github = getOctokit(process.env.GITHUB_TOKEN);
+
+          async function run() {
+            try {
+              const summary = await parseXML();
+              const commentBody = createCommentBody(summary);
+              await deleteExistingCommentAndCreateNew(commentBody);
+            } catch (error) {
+              console.error('Error:', error);
+              process.exit(1);
+            }
+          }
+
+          function parseXML() {
+            return new Promise((resolve, reject) => {
+              parser.parseString(xml, (err, result) => {
+                if (err) reject(err);
+                else resolve(result.CoverageReport.Summary[0]);
+              });
+            });
+          }
+
+          function createCommentBody(summary) {
+            const lineCoverage = summary.Linecoverage[0];
+            const methodCoverage = summary.Methodcoverage[0];
+
+            const formattedLineCoverage = formatCoverage(lineCoverage);
+            const formattedMethodCoverage = formatCoverage(methodCoverage);
+
+            return \`
+            ## 🍉 Code Coverage Summary 🧐
+
+            \| Metric               \| Value                        \|
+            \|----------------------\|------------------------------\|
+            \| Generated on         \| \${summary.Generatedon[0]}    \|
+            \| Author               \| soo-bak                       \|
+            \| Assemblies           \| \${summary.Assemblies[0]}     \|
+            \| Classes              \| \${summary.Classes[0]}        \|
+            \| Files                \| \${summary.Files[0]}          \|
+            \| Covered Lines        \| **\${summary.Coveredlines[0]}**   \|
+            \| Uncovered Lines      \| \${summary.Uncoveredlines[0]} \|
+            \| Coverable Lines      \| \${summary.Coverablelines[0]} \|
+            \| Total Lines          \| **\${summary.Totallines[0]}**     \|
+            \| Line Coverage        \| \${formattedLineCoverage}     \|
+            \| Covered Methods      \| **\${summary.Coveredmethods[0]}** \|
+            \| Total Methods        \| **\${summary.Totalmethods[0]}**   \|
+            \| Method Coverage      \| \${formattedMethodCoverage}   \|
+
+            \`;
+          }
+
+          function formatCoverage(coverage) {
+            const coverageNum = parseFloat(coverage);
+            if (coverageNum === 100) {
+              return \`\\\${\\\\rm{\\\\color{#00FF00}100\\\\\\\\%}}\\\$\`;
+            } else if (coverageNum >= 80) {
+              return \`\\\${\\\\rm{\\\\color{#FFD700}\${coverageNum}\\\\\\\\%}}\\\$\`;
+            } else {
+              return \`\\\${\\\\rm{\\\\color{#8B0000}\${coverageNum}\\\\\\\\%}}\\\$\`;
+            }
+          }
+
+          async function deleteExistingCommentAndCreateNew(body) {
+            const { data: comments } = await github.rest.issues.listComments({
+              ...context.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.login === 'github-actions[bot]' &&
+              comment.body.includes('Code Coverage Summary')
+            );
+
+            if (botComment) {
+              await github.rest.issues.deleteComment({
+                ...context.repo,
+                comment_id: botComment.id,
+              });
+              console.log('Deleted existing comment');
+            }
+
+            try {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+              console.log('Created new comment');
+            } catch (error) {
+              console.error('Error creating comment:', error);
+              process.exit(1);
+            }
+          }
+
+          run();
+          EOF
+
+      - name: Run Node.js Script
+        if: env.SUMMARY_EXISTS == 'true'
+        run: node script.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

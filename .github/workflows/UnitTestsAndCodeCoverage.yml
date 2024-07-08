@@ -157,18 +157,17 @@ jobs:
             \| Total Methods        \| \${summary.Totalmethods[0]}   \|
             \| Method Coverage      \| \${formattedMethodCoverage}   \|
 
-              ---
             \`;
           }
 
           function formatCoverage(coverage) {
             const coverageNum = parseFloat(coverage);
             if (coverageNum === 100) {
-              return \`**\${coverageNum}%**\`;
+              return \`\${\\rm\\color{#00FF00}100%}\$\`;
             } else if (coverageNum >= 80) {
-              return \`_\${coverageNum}%_\`;
+              return \`\${\\rm\\color{#FFD700}\${coverageNum}%}\$\`;
             } else {
-              return \`~~\${coverageNum}%~~\`;
+              return \`\${\\rm\\color{#8B0000}\${coverageNum}%}\$\`;
             }
           }
 

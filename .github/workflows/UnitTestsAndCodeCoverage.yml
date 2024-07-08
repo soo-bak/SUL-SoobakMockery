@@ -140,7 +140,7 @@ jobs:
             const formattedMethodCoverage = formatCoverage(methodCoverage);
 
             return \`
-            ## 🍉 Code Coverage Summary 🧐
+            ### 🍉 Code Coverage Summary 🧐
 
             \| Metric               \| Value                        \|
             \|----------------------\|------------------------------\|

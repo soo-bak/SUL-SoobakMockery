@@ -145,6 +145,7 @@ jobs:
             \| Metric               \| Value                        \|
             \|----------------------\|------------------------------\|
             \| Generated on         \| \${summary.Generatedon[0]}    \|
+            \| Author               \| soo-bak                       \|
             \| Assemblies           \| \${summary.Assemblies[0]}     \|
             \| Classes              \| \${summary.Classes[0]}        \|
             \| Files                \| \${summary.Files[0]}          \|
@@ -153,8 +154,8 @@ jobs:
             \| Coverable Lines      \| \${summary.Coverablelines[0]} \|
             \| Total Lines          \| **\${summary.Totallines[0]}**     \|
             \| Line Coverage        \| \${formattedLineCoverage}     \|
-            \| Covered Methods      \| \${summary.Coveredmethods[0]} \|
-            \| Total Methods        \| \${summary.Totalmethods[0]}   \|
+            \| Covered Methods      \| **\${summary.Coveredmethods[0]}** \|
+            \| Total Methods        \| **\${summary.Totalmethods[0]}**   \|
             \| Method Coverage      \| \${formattedMethodCoverage}   \|
 
             \`;
@@ -163,11 +164,11 @@ jobs:
           function formatCoverage(coverage) {
             const coverageNum = parseFloat(coverage);
             if (coverageNum === 100) {
-              return \`\\\${\\\\rm{\\\\color{#00FF00}100\\\\\\%}}\\\$\`;
+              return \`\\\${\\\\rm{\\\\color{#00FF00}100\\\\\\\\%}}\\\$\`;
             } else if (coverageNum >= 80) {
-              return \`\\\${\\\\rm{\\\\color{#FFD700}\${coverageNum}\\\\\\%}}\\\$\`;
+              return \`\\\${\\\\rm{\\\\color{#FFD700}\${coverageNum}\\\\\\\\%}}\\\$\`;
             } else {
-              return \`\\\${\\\\rm{\\\\color{#8B0000}\${coverageNum}\\\\\\%}}\\\$\`;
+              return \`\\\${\\\\rm{\\\\color{#8B0000}\${coverageNum}\\\\\\\\%}}\\\$\`;
             }
           }
 

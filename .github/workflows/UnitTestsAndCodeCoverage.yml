@@ -148,7 +148,7 @@ jobs:
             \| Assemblies           \| \${summary.Assemblies[0]}     \|
             \| Classes              \| \${summary.Classes[0]}        \|
             \| Files                \| \${summary.Files[0]}          \|
-            \| Covered Lines        \| \${summary.Coveredlines[0]}   \|
+            \| Covered Lines        \| **\${summary.Coveredlines[0]}**   \|
             \| Uncovered Lines      \| \${summary.Uncoveredlines[0]} \|
             \| Coverable Lines      \| \${summary.Coverablelines[0]} \|
             \| Total Lines          \| \${summary.Totallines[0]}     \|
@@ -163,11 +163,11 @@ jobs:
           function formatCoverage(coverage) {
             const coverageNum = parseFloat(coverage);
             if (coverageNum === 100) {
-              return \`\\\${\\\\rm\\\\color{#00FF00}100%}\\\$\`;
+              return \`\\\${\\\\rm{\\\\color{#00FF00}100\\\\%}}\\\$\`;
             } else if (coverageNum >= 80) {
-              return \`\\\${\\\\rm\\\\color{#FFD700}\${coverageNum}%}\\\$\`;
+              return \`\\\${\\\\rm{\\\\color{#FFD700}\${coverageNum}\\\\%}}\\\$\`;
             } else {
-              return \`\\\${\\\\rm\\\\color{#8B0000}\${coverageNum}%}\\\$\`;
+              return \`\\\${\\\\rm{\\\\color{#8B0000}\${coverageNum}\\\\%}}\\\$\`;
             }
           }
 

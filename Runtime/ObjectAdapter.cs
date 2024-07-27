@@ -17,15 +17,16 @@ public interface IObjectAdapter {
 
   void DontDestroyOnLoad(IObjectAdapter target);
 
-  T FindObjectOfType<T>() where T : UnityEngine.Object, IObjectAdapter;
-  T FindObjectOfType<T>(bool includeInactive) where T : UnityEngine.Object, IObjectAdapter;
+  T FindObjectOfType<T>() where T : UnityEngine.Object;
+  T FindObjectOfType<T>(bool includeInactive) where T : UnityEngine.Object;
+
   IObjectAdapter FindObjectOfType(Type type);
-  IObjectAdapter FIndObjectOfType(Type type, bool includeInactive);
+  IObjectAdapter FindObjectOfType(Type type, bool includeInactive);
 
   IObjectAdapter[] FindObjectsOfType(Type type);
   IObjectAdapter[] FindObjectsOfType(Type type, bool includeInactive);
-  T[] FindObjectsOfType<T> (bool includeInactive) where T : UnityEngine.Object, IObjectAdapter;
-  T[] FindObjectsOfType<T>() where T : UnityEngine.Object, IObjectAdapter;
+  T[] FindObjectsOfType<T> (bool includeInactive) where T : UnityEngine.Object;
+  T[] FindObjectsOfType<T>() where T : UnityEngine.Object;
 
   IObjectAdapter Instantiate(IObjectAdapter original);
   IObjectAdapter Instantiate(IObjectAdapter original, Transform parent);
@@ -61,22 +62,19 @@ public class ObjectAdapter : IObjectAdapter {
     UnityEngine.Object.DontDestroyOnLoad(obj);
   }
 
-  public T FindObjectOfType<T>() where T : UnityEngine.Object, IObjectAdapter {
-    UnityEngine.Object foundObject = UnityEngine.Object.FindObjectOfType<T>();
-    return foundObject != null ? (T)Activator.CreateInstance(typeof(T), foundObject) : default;
-  }
+  public T FindObjectOfType<T>() where T : UnityEngine.Object
+    => UnityEngine.Object.FindObjectOfType<T>();
+        
 
-  public T FindObjectOfType<T>(bool includeInactive) where T : UnityEngine.Object, IObjectAdapter {
-    UnityEngine.Object foundObject = UnityEngine.Object.FindObjectOfType<T>(includeInactive);
-    return foundObject != null ? (T)Activator.CreateInstance(typeof(T), foundObject) : default;
-  }
+  public T FindObjectOfType<T>(bool includeInactive) where T : UnityEngine.Object
+    => UnityEngine.Object.FindObjectOfType<T>(includeInactive);
 
   public IObjectAdapter FindObjectOfType(Type type) {
     UnityEngine.Object foundObject = UnityEngine.Object.FindObjectOfType(type);
     return foundObject != null ? new ObjectAdapter(foundObject) : null;
   }
 
-  public IObjectAdapter FIndObjectOfType(Type type, bool includeInactive) {
+  public IObjectAdapter FindObjectOfType(Type type, bool includeInactive) {
     UnityEngine.Object foundObject = UnityEngine.Object.FindObjectOfType(type, includeInactive);
     return foundObject != null ? new ObjectAdapter(foundObject) : null;
   }
@@ -101,25 +99,11 @@ public class ObjectAdapter : IObjectAdapter {
     return adapters;
   }
 
-  public T[] FindObjectsOfType<T>(bool includeInactive) where T : UnityEngine.Object, IObjectAdapter {
-    UnityEngine.Object[] foundObjects = UnityEngine.Object.FindObjectsOfType<T>(includeInactive);
+  public T[] FindObjectsOfType<T>(bool includeInactive) where T : UnityEngine.Object
+    => UnityEngine.Object.FindObjectsOfType<T>(includeInactive);
 
-    T[] adapters = new T[foundObjects.Length];
-    for (int i = 0; i < foundObjects.Length; i++)
-      adapters[i] = (T)Activator.CreateInstance(typeof(T), foundObjects[i]);
-
-    return adapters;
-  }
-
-  public T[] FindObjectsOfType<T>() where T : UnityEngine.Object, IObjectAdapter {
-    UnityEngine.Object[] foundObjects = UnityEngine.Object.FindObjectsOfType<T>();
-
-    T[] adapters = new T[foundObjects.Length];
-    for (int i = 0; i < foundObjects.Length; i++)
-      adapters[i] = (T)Activator.CreateInstance(typeof(T), foundObjects[i]);
-
-    return adapters;
-  }
+  public T[] FindObjectsOfType<T>() where T : UnityEngine.Object
+    => UnityEngine.Object.FindObjectsOfType<T>();
 
   public IObjectAdapter Instantiate(IObjectAdapter original) {
     UnityEngine.Object obj = (original as ObjectAdapter)._obj;

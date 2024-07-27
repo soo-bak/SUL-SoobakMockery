@@ -68,7 +68,7 @@ public class ObjectAdapter : IObjectAdapter {
 
   public T FindObjectOfType<T>(bool includeInactive) where T : UnityEngine.Object, IObjectAdapter {
     UnityEngine.Object foundObject = UnityEngine.Object.FindObjectOfType<T>(includeInactive);
-    return foundObject != null ? (T)Activator.CreateInstance(typeof(T), foundObject) : default
+    return foundObject != null ? (T)Activator.CreateInstance(typeof(T), foundObject) : default;
   }
 
   public IObjectAdapter FindObjectOfType(Type type) {

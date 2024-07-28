@@ -31,8 +31,12 @@ function parseXML(filePath) {
 }
 
 function combineResults(playmode, editmode) {
+  const now = new Date();
+  const formattedDate = `${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getDate().toString().padStart(2, '0')}/${now.getFullYear()} - ${now.getHours()
+    .toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+
   return {
-    Generatedon: [playmode.Generatedon],
+    Generatedon: [formattedDate],
     Author: ['soo-bak'],
     Assemblies: [parseInt(playmode.Assemblies[0])],
     Classes: [parseInt(playmode.Classes[0])],

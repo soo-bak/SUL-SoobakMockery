@@ -16,7 +16,7 @@ namespace SUL_Tests.Utilities {
 
       // Act
       string result = original.Reverse();
-
+      
       // Assert
       Assert.AreEqual(expected, result);
     }

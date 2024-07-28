@@ -10,7 +10,7 @@ async function run() {
     const editmodeResults = await parseXML('artifacts/Coverage results for editmode/Report/Summary.xml');
 
     const combinedResults = combineResults(playmodeResults, editmodeResults);
-    const commentBody = createCommentBody(combinedResults);
+    const commentBody = createCommentBody(playmodeResults, editmodeResults, combinedResults);
 
     await deleteExistingCommentAndCreateNew(commentBody);
   } catch (error) {
@@ -69,7 +69,7 @@ function createCommentBody(playmodeResults, editmodeResults, summary) {
   | Files                | ${summary.Files[0]}          | -        |
   | Covered Lines        | **${summary.Coveredlines[0]}**   | **Play : ${playmodeResults.Coveredlines[0]}**<br> **Edit : ${editmodeResults.Coveredlines[0]}** |
   | Uncovered Lines      | ${summary.Uncoveredlines[0]} | Play : ${playmodeResults.Uncoveredlines[0]}<br> Edit: ${editmodeResults.Uncoveredlines[0]} |
-  | Coverable Lines      | ${summary.Coverablelines[0]} | Play : ${playmodeResults.Coverablelines[0]}<br> Edit : ${editmodeResults.Coverablelines[0]} |
+  | Coverable Lines      | ${summary.Coverablelines[0]} | Play : ${playmodeResults.Coverablelines[0]}<br> Edit : ${editmodeResults.Coverablelines[0]}  |
   | Total Lines          | **${summary.Totallines[0]}**     | -        |
   | Line Coverage        | ${formatCoverage(lineCoverage)}     | Play : ${formatCoverage(playModeLineCoverage)}<br> Edit : ${formatCoverage(EditModeLineCoverage)} |
   | Covered Methods      | **${summary.Coveredmethods[0]}** | Play : ${playmodeResults.Coveredmethods[0]}<br> Edit : ${editmodeResults.Coveredmethods[0]} |

@@ -71,7 +71,7 @@ function createCommentBody(playmodeResults, editmodeResults, summary) {
   | Uncovered Lines      | ${summary.Uncoveredlines[0]} | [${playmodeResults.Uncoveredlines[0]}] lines <br> [${editmodeResults.Uncoveredlines[0]}] lines in Edit Mode |
   | Coverable Lines      | **${summary.Coverablelines[0]}** | -        |
   | Total Lines          | ${summary.Totallines[0]}     | -        |
-  | Line Coverage        | ${formatCoverage(lineCoverage)}     | ${formatCoverage(playModeLineCoverage)}<br> ${formatCoverage(EditModeLineCoverage)} |
+  | Line Coverage        | ${formatCoverage(lineCoverage)}     | ${formatCoverage(playModeLineCoverage)} in Play Mode<br> ${formatCoverage(EditModeLineCoverage)} in Edit Mode |
   | Covered Methods      | **${summary.Coveredmethods[0]}** | [${playmodeResults.Coveredmethods[0]}] methods in Play Mode<br> [${editmodeResults.Coveredmethods[0]}] methods in Edit Mode |
   | Total Methods        | **${summary.Totalmethods[0]}**   | -        |
   | Method Coverage      | ${formatCoverage(methodCoverage)}   | [${formatCoverage(playModeMethodCoverage)}] in Play Mode<br> [${formatCoverage(editModeMethodCoverage)}] in Edit Mode |

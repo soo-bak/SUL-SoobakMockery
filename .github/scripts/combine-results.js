@@ -58,23 +58,23 @@ function createCommentBody(playmodeResults, editmodeResults, summary) {
   const methodCoverage = (summary.Coveredmethods[0] / summary.Totalmethods[0] * 100).toFixed(1);
 
   return `
-  ### 🍉 Combined Code Coverage Summary 🧐
+  ### 🍉 Code Coverage Summary 🧐
 
-  | Info                 | Value                        | Mode     |
+  | Metric               | Value                        | Mode Details    |
   |----------------------|------------------------------|----------|
   | Generated on         | ${summary.Generatedon[0]}    | -        |
   | Author               | ${summary.Author[0]}         | -        |
   | Assemblies           | ${summary.Assemblies[0]}     | -        |
   | Classes              | ${summary.Classes[0]}        | -        |
   | Files                | ${summary.Files[0]}          | -        |
-  | Covered Lines        | **${summary.Coveredlines[0]}**   | **Play : ${playmodeResults.Coveredlines[0]}**<br> **Edit : ${editmodeResults.Coveredlines[0]}** |
-  | Uncovered Lines      | ${summary.Uncoveredlines[0]} | Play : ${playmodeResults.Uncoveredlines[0]}<br> Edit: ${editmodeResults.Uncoveredlines[0]} |
-  | Coverable Lines      | ${summary.Coverablelines[0]} | Play : ${playmodeResults.Coverablelines[0]}<br> Edit : ${editmodeResults.Coverablelines[0]}  |
-  | Total Lines          | **${summary.Totallines[0]}**     | -        |
-  | Line Coverage        | ${formatCoverage(lineCoverage)}     | Play : ${formatCoverage(playModeLineCoverage)}<br> Edit : ${formatCoverage(EditModeLineCoverage)} |
-  | Covered Methods      | **${summary.Coveredmethods[0]}** | Play : ${playmodeResults.Coveredmethods[0]}<br> Edit : ${editmodeResults.Coveredmethods[0]} |
+  | Covered Lines        | **${summary.Coveredlines[0]}**   | [${playmodeResults.Coveredlines[0]}] lines in Play Mode<br> [${editmodeResults.Coveredlines[0]}] lines in Edit Mode |
+  | Uncovered Lines      | ${summary.Uncoveredlines[0]} | [${playmodeResults.Uncoveredlines[0]}] lines <br> [${editmodeResults.Uncoveredlines[0]}] lines in Edit Mode |
+  | Coverable Lines      | **${summary.Coverablelines[0]}** | -        |
+  | Total Lines          | ${summary.Totallines[0]}     | -        |
+  | Line Coverage        | ${formatCoverage(lineCoverage)}     | ${formatCoverage(playModeLineCoverage)}<br> ${formatCoverage(EditModeLineCoverage)} |
+  | Covered Methods      | **${summary.Coveredmethods[0]}** | [${playmodeResults.Coveredmethods[0]}] methods in Play Mode<br> [${editmodeResults.Coveredmethods[0]}] methods in Edit Mode |
   | Total Methods        | **${summary.Totalmethods[0]}**   | -        |
-  | Method Coverage      | ${formatCoverage(methodCoverage)}   | Play : ${formatCoverage(playModeMethodCoverage)}<br> Edit : ${formatCoverage(editModeMethodCoverage)} |
+  | Method Coverage      | ${formatCoverage(methodCoverage)}   | [${formatCoverage(playModeMethodCoverage)}] in Play Mode<br> [${formatCoverage(editModeMethodCoverage)}] in Edit Mode |
   `;
 }
 

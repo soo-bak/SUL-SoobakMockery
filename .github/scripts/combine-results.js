@@ -32,7 +32,7 @@ function parseXML(filePath) {
 
 function combineResults(playmode, editmode) {
   return {
-    Generatedon: [new Date().toISOString()],
+    Generatedon: [playmode.Generatedon],
     Author: ['soo-bak'],
     Assemblies: [parseInt(playmode.Assemblies[0])],
     Classes: [parseInt(playmode.Classes[0])],

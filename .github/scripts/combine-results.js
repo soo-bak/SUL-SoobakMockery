@@ -67,14 +67,14 @@ function createCommentBody(playmodeResults, editmodeResults, summary) {
   | Assemblies           | ${summary.Assemblies[0]}     | -        |
   | Classes              | ${summary.Classes[0]}        | -        |
   | Files                | ${summary.Files[0]}          | -        |
-  | Covered Lines        | **${summary.Coveredlines[0]}**   | [${playmodeResults.Coveredlines[0]}] lines in Play Mode<br> [${editmodeResults.Coveredlines[0]}] lines in Edit Mode |
-  | Uncovered Lines      | ${summary.Uncoveredlines[0]} | [${playmodeResults.Uncoveredlines[0]}] lines <br> [${editmodeResults.Uncoveredlines[0]}] lines in Edit Mode |
+  | Covered Lines        | **${summary.Coveredlines[0]}**   | **${playmodeResults.Coveredlines[0]}** - Play Mode<br> **${editmodeResults.Coveredlines[0]}** - Edit Mode |
+  | Uncovered Lines      | ${summary.Uncoveredlines[0]} | -        |
   | Coverable Lines      | **${summary.Coverablelines[0]}** | -        |
   | Total Lines          | ${summary.Totallines[0]}     | -        |
-  | Line Coverage        | ${formatCoverage(lineCoverage)}     | ${formatCoverage(playModeLineCoverage)} in Play Mode<br> ${formatCoverage(EditModeLineCoverage)} in Edit Mode |
-  | Covered Methods      | **${summary.Coveredmethods[0]}** | [${playmodeResults.Coveredmethods[0]}] methods in Play Mode<br> [${editmodeResults.Coveredmethods[0]}] methods in Edit Mode |
+  | Line Coverage        | ${formatCoverage(lineCoverage)}     | ${formatCoverage(playModeLineCoverage)} - Play Mode<br> ${formatCoverage(EditModeLineCoverage)} - Edit Mode |
+  | Covered Methods      | **${summary.Coveredmethods[0]}** | **${playmodeResults.Coveredmethods[0]}** - Play Mode<br> **${editmodeResults.Coveredmethods[0]}** - Edit Mode |
   | Total Methods        | **${summary.Totalmethods[0]}**   | -        |
-  | Method Coverage      | ${formatCoverage(methodCoverage)}   | [${formatCoverage(playModeMethodCoverage)}] in Play Mode<br> [${formatCoverage(editModeMethodCoverage)}] in Edit Mode |
+  | Method Coverage      | ${formatCoverage(methodCoverage)}   | ${formatCoverage(playModeMethodCoverage)} - Play Mode<br> ${formatCoverage(editModeMethodCoverage)} - Edit Mode |
   `;
 }
 

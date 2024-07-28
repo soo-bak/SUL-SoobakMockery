@@ -5,20 +5,21 @@
 [![🧪 Unit Tests And Code Coverage](https://github.com/soo-bak/SoobakLibrary-Unity/actions/workflows/UnitTestsAndCodeCoverage.yml/badge.svg)](https://github.com/soo-bak/SoobakLibrary-Unity/actions/workflows/UnitTestsAndCodeCoverage.yml)
   ### 🍉 Code Coverage Summary 🧐
 
-  | Metric               | Value                        |
-  |----------------------|------------------------------|
-  | Generated on         | 07/08/2024 - 12:20:32    |
-  | Author               | soo-bak                       |
-  | Assemblies           | 2     |
-  | Classes              | 2        |
-  | Files                | 2          |
-  | Covered Lines        | **18**   |
-  | Uncovered Lines      | 0 |
-  | Coverable Lines      | 18 |
-  | Total Lines          | **54**     |
-  | Line Coverage        | ${\rm{\color{#00FF00}100\\%}}$     |
-  | Covered Methods      | **3** |
-  | Total Methods        | **3**   |
-  | Method Coverage      | ${\rm{\color{#00FF00}100\\%}}$   |
+  | Metric               | Value                        | Mode Details    |
+  |----------------------|------------------------------|----------|
+  | Generated on         | 07/28/2024 - 21:42:28 (KST)    | -        |
+  | Author               | soo-bak         | -        |
+  | Assemblies           | 4     | -        |
+  | Classes              | 4        | -        |
+  | Files                | 4          | -        |
+  | Covered Lines        | **179**   | 22 - Play Mode<br> 157 - Edit Mode |
+  | Uncovered Lines      | 0 | -        |
+  | Coverable Lines      | **179** | -        |
+  | Total Lines          | 360     | -        |
+  | Line Coverage        | $\{\\rm{\color{#00FF00}100\\%}}$     | $\{\\rm{\color{#8B0000}12.3\\%}}$ - Play Mode<br> $\{\\rm{\color{#FFD700}87.7\\%}}$ - Edit Mode |
+  | Covered Methods      | **27** | 4 - Play Mode<br> 23 - Edit Mode |
+  | Total Methods        | **27**   | -        |
+  | Method Coverage      | $\{\\rm{\color{#00FF00}100\\%}}$   | $\{\\rm{\color{#8B0000}14.8\\%}}$ - Play Mode<br> $\{\\rm{\color{#FFD700}85.2\\%}}$ - Edit Mode |
+  
 
   

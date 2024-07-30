@@ -25,7 +25,7 @@ public interface IObjectAdapter {
 
   IObjectAdapter[] FindObjectsOfType(Type type);
   IObjectAdapter[] FindObjectsOfType(Type type, bool includeInactive);
-  T[] FindObjectsOfType<T> (bool includeInactive) where T : UnityEngine.Object;
+  T[] FindObjectsOfType<T>(bool includeInactive) where T : UnityEngine.Object;
   T[] FindObjectsOfType<T>() where T : UnityEngine.Object;
 
   IObjectAdapter Instantiate(IObjectAdapter original);
@@ -35,103 +35,91 @@ public interface IObjectAdapter {
   IObjectAdapter Instantiate(IObjectAdapter original, Vector3 position, Quaternion rotation, Transform parent);
 }
 
-public class ObjectAdapter : IObjectAdapter {
-  private readonly UnityEngine.Object _obj;
+public class ObjectAdapter : UnityEngine.Object, IObjectAdapter {
+  private readonly UnityEngine.Object adaptee;
 
-  public ObjectAdapter(UnityEngine.Object obj) => _obj = obj;
+  public ObjectAdapter(UnityEngine.Object obj) => this.adaptee = obj;
 
-  public string Name { get => _obj.name; set => _obj.name = value; }
-  public HideFlags HideFlags { get => _obj.hideFlags; set => _obj.hideFlags = value; }
+  public string Name { get => adaptee.name; set => adaptee.name = value; }
+  public HideFlags HideFlags { get => adaptee.hideFlags; set => adaptee.hideFlags = value; }
 
-  public int GetInstanceID() => _obj.GetInstanceID();
+  public override string ToString() => adaptee.ToString();
 
-  public override string ToString() => _obj.ToString();
+  public void Destroy(IObjectAdapter obj, float t = 0)
+    => UnityEngine.Object.Destroy((obj as ObjectAdapter).adaptee, t);
 
-  public void Destroy(IObjectAdapter objA, float f = 0) {
-    UnityEngine.Object obj = (objA as ObjectAdapter)._obj;
-    UnityEngine.Object.Destroy(obj, f);
-  }
+  public void DestroyImmediate(IObjectAdapter obj, bool allowDestroyingAssets = false)
+    => UnityEngine.Object.DestroyImmediate((obj as ObjectAdapter).adaptee, allowDestroyingAssets);
 
-  public void DestroyImmediate(IObjectAdapter objA, bool allowDestroyingAssets = false) {
-    UnityEngine.Object obj = (objA as ObjectAdapter)._obj;
-    UnityEngine.Object.DestroyImmediate(obj, allowDestroyingAssets);
-  }
+  public void DontDestroyOnLoad(IObjectAdapter target)
+    => UnityEngine.Object.DontDestroyOnLoad((target as ObjectAdapter).adaptee);
 
-  public void DontDestroyOnLoad(IObjectAdapter target) {
-    UnityEngine.Object obj = (target as ObjectAdapter)._obj;
-    UnityEngine.Object.DontDestroyOnLoad(obj);
-  }
-
-  public T FindObjectOfType<T>() where T : UnityEngine.Object
+  public new T FindObjectOfType<T>() where T : UnityEngine.Object
     => UnityEngine.Object.FindObjectOfType<T>();
-        
 
-  public T FindObjectOfType<T>(bool includeInactive) where T : UnityEngine.Object
+  public new T FindObjectOfType<T>(bool includeInactive) where T : UnityEngine.Object
     => UnityEngine.Object.FindObjectOfType<T>(includeInactive);
 
-  public IObjectAdapter FindObjectOfType(Type type) {
-    UnityEngine.Object foundObject = UnityEngine.Object.FindObjectOfType(type);
+  public new IObjectAdapter FindObjectOfType(Type type) {
+    var foundObject = UnityEngine.Object.FindObjectOfType(type);
     return foundObject != null ? new ObjectAdapter(foundObject) : null;
   }
 
-  public IObjectAdapter FindObjectOfType(Type type, bool includeInactive) {
-    UnityEngine.Object foundObject = UnityEngine.Object.FindObjectOfType(type, includeInactive);
+  public new IObjectAdapter FindObjectOfType(Type type, bool includeInactive) {
+    var foundObject = UnityEngine.Object.FindObjectOfType(type, includeInactive);
     return foundObject != null ? new ObjectAdapter(foundObject) : null;
   }
 
-  public IObjectAdapter[] FindObjectsOfType(Type type) {
-    UnityEngine.Object[] foundObjects = UnityEngine.Object.FindObjectsOfType(type);
+  public new IObjectAdapter[] FindObjectsOfType(Type type) {
+    var foundObjects = UnityEngine.Object.FindObjectsOfType(type);
+    if (foundObjects == null) return null;
 
-    IObjectAdapter[] adapters = new IObjectAdapter[foundObjects.Length];
+    var adapters = new IObjectAdapter[foundObjects.Length];
     for (int i = 0; i < foundObjects.Length; i++)
       adapters[i] = new ObjectAdapter(foundObjects[i]);
 
     return adapters;
   }
 
-  public IObjectAdapter[] FindObjectsOfType(Type type, bool includeInactive) {
-    UnityEngine.Object[] foundObjects = UnityEngine.Object.FindObjectsOfType(type, includeInactive);
+  public new IObjectAdapter[] FindObjectsOfType(Type type, bool includeInactive) {
+    var foundObjects = UnityEngine.Object.FindObjectsOfType(type, includeInactive);
+    if (foundObjects == null) return null;
 
-    IObjectAdapter[] adapters = new IObjectAdapter[foundObjects.Length];
+    var adapters = new IObjectAdapter[foundObjects.Length];
     for (int i = 0; i < foundObjects.Length; i++)
       adapters[i] = new ObjectAdapter(foundObjects[i]);
 
     return adapters;
   }
 
-  public T[] FindObjectsOfType<T>(bool includeInactive) where T : UnityEngine.Object
+  public new T[] FindObjectsOfType<T>(bool includeInactive) where T : UnityEngine.Object
     => UnityEngine.Object.FindObjectsOfType<T>(includeInactive);
 
-  public T[] FindObjectsOfType<T>() where T : UnityEngine.Object
+  public new T[] FindObjectsOfType<T>() where T : UnityEngine.Object
     => UnityEngine.Object.FindObjectsOfType<T>();
 
   public IObjectAdapter Instantiate(IObjectAdapter original) {
-    UnityEngine.Object obj = (original as ObjectAdapter)._obj;
-    UnityEngine.Object instantiatedObj = UnityEngine.Object.Instantiate(obj);
+    var instantiatedObj = UnityEngine.Object.Instantiate((original as ObjectAdapter).adaptee);
     return new ObjectAdapter(instantiatedObj);
   }
 
   public IObjectAdapter Instantiate(IObjectAdapter original, Transform parent) {
-    UnityEngine.Object obj = (original as ObjectAdapter)._obj;
-    UnityEngine.Object instantiatedObj = UnityEngine.Object.Instantiate(obj, parent);
+    var instantiatedObj = UnityEngine.Object.Instantiate((original as ObjectAdapter).adaptee, parent);
     return new ObjectAdapter(instantiatedObj);
   }
 
   public IObjectAdapter Instantiate(IObjectAdapter original, Transform parent, bool instantiateInWorldSpace) {
-    UnityEngine.Object obj = (original as ObjectAdapter)._obj;
-    UnityEngine.Object instantiatedObj = UnityEngine.Object.Instantiate(obj, parent, instantiateInWorldSpace);
+    var instantiatedObj = UnityEngine.Object.Instantiate((original as ObjectAdapter).adaptee, parent, instantiateInWorldSpace);
     return new ObjectAdapter(instantiatedObj);
   }
 
   public IObjectAdapter Instantiate(IObjectAdapter original, Vector3 position, Quaternion rotation) {
-    UnityEngine.Object obj = (original as ObjectAdapter)._obj;
-    UnityEngine.Object instantiatedObj = UnityEngine.Object.Instantiate(obj, position, rotation);
+    var instantiatedObj = UnityEngine.Object.Instantiate((original as ObjectAdapter).adaptee, position, rotation);
     return new ObjectAdapter(instantiatedObj);
   }
 
   public IObjectAdapter Instantiate(IObjectAdapter original, Vector3 position, Quaternion rotation, Transform parent) {
-    UnityEngine.Object obj = (original as ObjectAdapter)._obj;
-    UnityEngine.Object instantiatedObj = UnityEngine.Object.Instantiate(obj, position, rotation, parent);
+    var instantiatedObj = UnityEngine.Object.Instantiate((original as ObjectAdapter).adaptee, position, rotation, parent);
     return new ObjectAdapter(instantiatedObj);
   }
 }

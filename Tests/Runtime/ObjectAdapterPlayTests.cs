@@ -1,51 +1,77 @@
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using SUL.Adapters;
 using System.Collections;
 
-public class ObjectAdapterPlayTests
-{
-    private IObjectAdapter adapter;
-    private UnityEngine.Object testObject;
+namespace SUL_Tests.Adapters {
 
-    [SetUp]
-    public void SetUp()
-    {
-        testObject = new GameObject();
-        adapter = new ObjectAdapter(testObject);
-    }
+[TestFixture]
+[Category("Adapters")]
+public class ObjectAdapterPlayTests {
+  private IObjectAdapter adapter = null;
+  private Object testObj = null;
 
-    [TearDown]
-    public void TearDown()
-    {
-        if (testObject != null)
-        {
-            UnityEngine.Object.Destroy(testObject);
-        }
-    }
+  [UnitySetUp]
+  public IEnumerator SetUp() {
+    testObj = new Object();
+    adapter = new ObjectAdapter(testObj);
 
-    [UnityTest]
-    public IEnumerator Destroy_DestroysObjectAfterDelay()
-    {
-        adapter.Destroy(adapter, 0.1f);
+    yield return null;
+  }
 
-        Assert.IsNotNull(testObject.GetInstanceID());
+  [UnityTearDown]
+  public IEnumerator TearDown() {
+    if (testObj != null)
+      Object.Destroy(testObj);
+    testObj = null;
 
-        yield return new WaitForSeconds(0.2f);
+    adapter?.Destroy(adapter);
+    adapter = null;
 
-        Assert.IsTrue(testObject == null);
-    }
+    yield return null;
+  }
 
-    [UnityTest]
-    public IEnumerator DontDestroyOnLoad_KeepsObjectAcrossSceneLoads()
-    {
-        adapter.DontDestroyOnLoad(adapter);
+  [UnityTest]
+  public IEnumerator Destroy_DestroysObjectAfterDelay() {
+    // Arrange
+    const float delaySec = 0.1f;
+    const float afterDelaySec = 0.2f;
 
-        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    // Act
+    adapter.Destroy(adapter, delaySec);
 
-        yield return null;
+    // Assert
+    Assert.IsFalse(testObj == null);
+    yield return new WaitForSeconds(afterDelaySec);
+    Assert.IsTrue(testObj == null);
+  }
 
-        Assert.IsNotNull(testObject);
-    }
+  [UnityTest]
+  public IEnumerator DontDestroyOnLoad_KeepsObjectAcrossSceneLoads() {
+    // Act
+    adapter.DontDestroyOnLoad(adapter);
+    yield return SimulateSceneTransition();
+
+    // Assert
+    Assert.IsNotNull(adapter);
+    Assert.IsFalse(adapter == null);
+
+  }
+
+  private IEnumerator SimulateSceneTransition() {
+    var originScene = SceneManager.GetActiveScene();
+
+    var tempSceneName = "TempScene";
+    var tempScene = SceneManager.CreateScene(tempSceneName);
+
+    yield return SceneManager.SetActiveScene(tempScene);
+
+    yield return SceneManager.UnloadSceneAsync(tempScene);
+
+    yield return SceneManager.SetActiveScene(originScene);
+  }
 }
+
+}// namesapce

@@ -43,6 +43,8 @@ public class ObjectAdapter : UnityEngine.Object, IObjectAdapter {
   public string Name { get => adaptee.name; set => adaptee.name = value; }
   public HideFlags HideFlags { get => adaptee.hideFlags; set => adaptee.hideFlags = value; }
 
+  public new int GetInstanceID() => adaptee.GetInstanceID();
+
   public override string ToString() => adaptee.ToString();
 
   public void Destroy(IObjectAdapter obj, float t = 0)

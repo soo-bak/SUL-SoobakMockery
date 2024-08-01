@@ -7,19 +7,16 @@
 
   | Metric               | Value                        | Mode Details    |
   |----------------------|------------------------------|----------|
-  | Generated on         | 07/28/2024 - 21:42:28 (KST)    | -        |
+  | Generated on         | 08/02/2024 - 01:52:28 (KST)    | -        |
   | Author               | soo-bak         | -        |
   | Assemblies           | 4     | -        |
   | Classes              | 4        | -        |
   | Files                | 4          | -        |
-  | Covered Lines        | **179**   | 22 - Play Mode<br> 157 - Edit Mode |
+  | Covered Lines        | **228**   | 149 - Play Mode<br> 79 - Edit Mode |
   | Uncovered Lines      | 0 | -        |
-  | Coverable Lines      | **179** | -        |
-  | Total Lines          | 360     | -        |
-  | Line Coverage        | $\{\\rm{\color{#00FF00}100\\%}}$     | $\{\\rm{\color{#8B0000}12.3\\%}}$ - Play Mode<br> $\{\\rm{\color{#FFD700}87.7\\%}}$ - Edit Mode |
-  | Covered Methods      | **27** | 4 - Play Mode<br> 23 - Edit Mode |
-  | Total Methods        | **27**   | -        |
-  | Method Coverage      | $\{\\rm{\color{#00FF00}100\\%}}$   | $\{\\rm{\color{#8B0000}14.8\\%}}$ - Play Mode<br> $\{\\rm{\color{#FFD700}85.2\\%}}$ - Edit Mode |
-  
-
-  
+  | Coverable Lines      | **228** | -        |
+  | Total Lines          | 451     | -        |
+  | Line Coverage        | $\{\\rm{\color{#00FF00}100\\%}}$     | $\{\\rm{\color{#8B0000}65.4\\%}}$ - Play Mode<br> $\{\\rm{\color{#8B0000}34.6\\%}}$ - Edit Mode |
+  | Covered Methods      | **29** | 15 - Play Mode<br> 14 - Edit Mode |
+  | Total Methods        | **29**   | -        |
+  | Method Coverage      | $\{\\rm{\color{#00FF00}100\\%}}$   | $\{\\rm{\color{#8B0000}51.7\\%}}$ - Play Mode<br> $\{\\rm{\color{#8B0000}48.3\\%}}$ - Edit Mode |

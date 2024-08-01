@@ -270,3 +270,5 @@ public class ObjectAdapterPlayTests {
     yield return SceneManager.SetActiveScene(originScene);
   }
 }
+
+} // namespace

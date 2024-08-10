@@ -1,6 +1,6 @@
 using System;
 
-namespace SUL {
+namespace SUL.Utilities {
 
   public static class StringExtensions {
     public static string Reverse(this string str) {
@@ -14,4 +14,4 @@ namespace SUL {
     }
   }
 
-}
+} // namespace

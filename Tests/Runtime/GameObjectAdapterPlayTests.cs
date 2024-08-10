@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.SceneManagement;
 using SUL.Adapters;
+using SUL.TestUtilities;
 
-namespace SUL_Tests.Adapters
+namespace SUL.Adapters
 {
     [TestFixture]
     [Category("Adapters")]
@@ -41,7 +42,7 @@ namespace SUL_Tests.Adapters
             adapter.DontDestroyOnLoad(adapter);
 
             // Act
-            yield return SimulateSceneTransition();
+            yield return TestHelper.SimulateSceneTransition();
 
             // Assert
             Assert.IsNotNull(GameObject.Find(TEST_OBJ_NAME));
@@ -133,16 +134,6 @@ namespace SUL_Tests.Adapters
             // Clean up
             parentAdapter.Destroy(parentAdapter);
             newAdapter.Destroy(newAdapter);
-        }
-
-        private IEnumerator SimulateSceneTransition()
-        {
-            var originScene = SceneManager.GetActiveScene();
-            var tmpSceneName = "TempScene";
-            var tmpScene = SceneManager.CreateScene(tmpSceneName);
-            yield return SceneManager.SetActiveScene(tmpScene);
-            yield return SceneManager.UnloadSceneAsync(tmpScene);
-            yield return SceneManager.SetActiveScene(originScene);
         }
     }
 }

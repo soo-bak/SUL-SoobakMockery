@@ -59,251 +59,233 @@ public interface IGameObjectAdapter : IObjectAdapter {
 }
 
 public class GameObjectAdapter : IGameObjectAdapter {
-  public bool activeInHierachy => throw new NotImplementedException();
+  private GameObject adaptee;
 
-  public bool activeSelf => throw new NotImplementedException();
+  public GameObjectAdapter(GameObject adaptee)
+  => this.adaptee = adaptee;
 
-  public bool isStatic { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-  public int layer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+  public bool activeInHierachy => adaptee.activeInHierarchy;
 
-  public Scene scene => throw new NotImplementedException();
+  public bool activeSelf => adaptee.activeSelf;
 
-  public ulong sceneCullingMask => throw new NotImplementedException();
+  public bool isStatic { get => adaptee.isStatic; set => adaptee.isStatic = value; }
+  public int layer { get => adaptee.layer; set => adaptee.layer = value; }
 
-  public string tag { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+  public Scene scene => adaptee.scene;
 
-  public Transform transform => throw new NotImplementedException();
+  public ulong sceneCullingMask => adaptee.sceneCullingMask;
 
+  public string tag { get => adaptee.tag; set => adaptee.tag = value; }
 
-  public GameObjectAdapter() => throw new NotImplementedException();
-
-  public GameObjectAdapter(string name) => throw new NotImplementedException();
-
-  public GameObjectAdapter(string name, params Type[] components) => throw new NotImplementedException();
+  public Transform transform => adaptee.transform;
 
 
+  public GameObjectAdapter() => this.adaptee = new GameObject();
 
-  public string Name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-  public HideFlags HideFlags { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+  public GameObjectAdapter(string name) => this.adaptee = new GameObject(name);
 
-  public void Destroy(IObjectAdapter objAdapter, float f = 0) {
-    throw new NotImplementedException();
+  public GameObjectAdapter(string name, params Type[] components) => this.adaptee = new GameObject(name, components);
+
+
+  public string name { get => adaptee.name; set => adaptee.name = value; }
+  public HideFlags hideFlags { get => adaptee.hideFlags; set => adaptee.hideFlags = value; }
+
+  public void Destroy(IObjectAdapter objAdapter, float t = 0) {
+    if (objAdapter is GameObjectAdapter gameObjAdapter)
+      UnityEngine.Object.Destroy(gameObjAdapter.adaptee, t);
   }
 
   public void DestroyImmediate(IObjectAdapter objAdapter, bool allowDestroyingAssets = false) {
-    throw new NotImplementedException();
+    if (objAdapter is GameObjectAdapter gameObjAdapter)
+      UnityEngine.Object.DestroyImmediate(gameObjAdapter.adaptee, allowDestroyingAssets);
   }
 
   public void DontDestroyOnLoad(IObjectAdapter target) {
-    throw new NotImplementedException();
+    if (target is GameObjectAdapter gameObjAdapter)
+      UnityEngine.Object.DontDestroyOnLoad(gameObjAdapter.adaptee);
   }
 
-  public T FindObjectOfType<T>() where T : UnityEngine.Object {
-    throw new NotImplementedException();
-  }
+  public T FindObjectOfType<T>() where T : UnityEngine.Object
+    => UnityEngine.Object.FindObjectOfType<T>();
 
-  public T FindObjectOfType<T>(bool includeInactive) where T : UnityEngine.Object {
-    throw new NotImplementedException();
-  }
+  public T FindObjectOfType<T>(bool includeInactive) where T : UnityEngine.Object
+    => UnityEngine.Object.FindObjectOfType<T>(includeInactive);
 
   public IObjectAdapter FindObjectOfType(Type type) {
-    throw new NotImplementedException();
+    var obj = UnityEngine.Object.FindObjectOfType(type);
+    return obj is GameObject gameObj ? new GameObjectAdapter(gameObj) : null;
   }
 
   public IObjectAdapter FindObjectOfType(Type type, bool includeInactive) {
-    throw new NotImplementedException();
+    var obj = UnityEngine.Object.FindObjectOfType(type, includeInactive);
+    return obj is GameObject gmaeObj ? new GameObjectAdapter(gmaeObj) : null;
   }
 
   public IObjectAdapter[] FindObjectsOfType(Type type) {
-    throw new NotImplementedException();
+    var objs = UnityEngine.Object.FindObjectsOfType(type);
+    return ConvertToAdapters(objs);
   }
 
   public IObjectAdapter[] FindObjectsOfType(Type type, bool includeInactive) {
-    throw new NotImplementedException();
+    var objs = UnityEngine.Object.FindObjectsOfType(type, includeInactive);
+    return ConvertToAdapters(objs);
   }
 
-  public T[] FindObjectsOfType<T>(bool includeInactive) where T : UnityEngine.Object {
-    throw new NotImplementedException();
-  }
+  public T[] FindObjectsOfType<T>(bool includeInactive) where T : UnityEngine.Object
+    => UnityEngine.Object.FindObjectsOfType<T>(includeInactive);
 
-  public T[] FindObjectsOfType<T>() where T : UnityEngine.Object {
-    throw new NotImplementedException();
-  }
 
-  public int GetInstanceID() {
-    throw new NotImplementedException();
-  }
+  public T[] FindObjectsOfType<T>() where T : UnityEngine.Object
+    => UnityEngine.Object.FindObjectsOfType<T>();
 
-  public IObjectAdapter Instantiate(IObjectAdapter original) {
-    throw new NotImplementedException();
-  }
+  public int GetInstanceID() => adaptee.GetInstanceID();
 
-  public IObjectAdapter Instantiate(IObjectAdapter original, Transform parent) {
-    throw new NotImplementedException();
-  }
+  public IObjectAdapter Instantiate(IObjectAdapter original)
+    => InstantiateInternal(original, null, false);
 
-  public IObjectAdapter Instantiate(IObjectAdapter original, Transform parent, bool instantiateInWorldSpace) {
-    throw new NotImplementedException();
-  }
+  public IObjectAdapter Instantiate(IObjectAdapter original, Transform parent)
+    => InstantiateInternal(original, parent, false);
 
-  public IObjectAdapter Instantiate(IObjectAdapter original, Vector3 position, Quaternion rotation) {
-    throw new NotImplementedException();
-  }
+  public IObjectAdapter Instantiate(IObjectAdapter original, Transform parent, bool instantiateInWorldSpace)
+    => InstantiateInternal(original, parent, instantiateInWorldSpace);
 
-  public IObjectAdapter Instantiate(IObjectAdapter original, Vector3 position, Quaternion rotation, Transform parent) {
-    throw new NotImplementedException();
-  }
+  public IObjectAdapter Instantiate(IObjectAdapter original, Vector3 position, Quaternion rotation)
+    => InstantiateInternal(original, null, false, position, rotation);
 
-  public Component AddComponent(Type componentType) {
-    throw new NotImplementedException();
-  }
+  public IObjectAdapter Instantiate(IObjectAdapter original, Vector3 position, Quaternion rotation, Transform parent)
+    => InstantiateInternal(original, parent, false, position, rotation);
 
-  public void BroadCastMessage(string message, object parameter = null, SendMessageOptions options = SendMessageOptions.RequireReceiver) {
-    throw new NotImplementedException();
-  }
+  public Component AddComponent(Type componentType) => adaptee.AddComponent(componentType);
 
-  public bool CompareTag(string tag) {
-    throw new NotImplementedException();
-  }
+  public void BroadCastMessage(string methodName, object parameter = null,
+                               SendMessageOptions options = SendMessageOptions.RequireReceiver)
+     => adaptee.BroadcastMessage(methodName, parameter, options);
 
-  public T GetComponent<T>() {
-    throw new NotImplementedException();
-  }
+  public bool CompareTag(string tag) => adaptee.CompareTag(tag);
 
-  public Component GetComponent(Type type) {
-    throw new NotImplementedException();
-  }
+  public T GetComponent<T>() => adaptee.GetComponent<T>();
 
-  public Component GetComponent(string type) {
-    throw new NotImplementedException();
-  }
+  public Component GetComponent(Type type) => adaptee.GetComponent(type);
 
-  public T GetComponentInChildren<T>(bool includeInactive = false) {
-    throw new NotImplementedException();
-  }
+  public Component GetComponent(string type) => adaptee.GetComponent(type);
 
-  public Component GetComponentInChildren(Type type) {
-    throw new NotImplementedException();
-  }
+  public T GetComponentInChildren<T>(bool includeInactive = false)
+    => adaptee.GetComponentInChildren<T>(includeInactive);
 
-  public Component GetComponentInChildren(Type type, bool includeInactive) {
-    throw new NotImplementedException();
-  }
+  public Component GetComponentInChildren(Type type)
+    => adaptee.GetComponentInChildren(type);
 
-  public T GetComponentInParent<T>(bool includeInactive = false) {
-    throw new NotImplementedException();
-  }
+  public Component GetComponentInChildren(Type type, bool includeInactive)
+    => adaptee.GetComponentInChildren(type, includeInactive);
 
-  public Component GetComponentInParent(Type type) {
-    throw new NotImplementedException();
-  }
+  public T GetComponentInParent<T>(bool includeInactive = false)
+    => adaptee.GetComponentInParent<T>(includeInactive);
 
-  public Component GetComponentInParent(Type type, bool includeInactive) {
-    throw new NotImplementedException();
-  }
+  public Component GetComponentInParent(Type type)
+    => adaptee.GetComponentInParent(type);
 
-  public T[] GetComponents<T>() {
-    throw new NotImplementedException();
-  }
+  public Component GetComponentInParent(Type type, bool includeInactive)
+    => adaptee.GetComponentInParent(type, includeInactive);
 
-  public void GetComponents<T>(List<T> results) {
-    throw new NotImplementedException();
-  }
+  public T[] GetComponents<T>() => adaptee.GetComponents<T>();
 
-  public Component[] GetComponents(Type type) {
-    throw new NotImplementedException();
-  }
+  public void GetComponents<T>(List<T> results) => adaptee.GetComponents(results);
 
-  public void GetComponents(Type type, List<Component> results) {
-    throw new NotImplementedException();
-  }
+  public Component[] GetComponents(Type type) => adaptee.GetComponents(type);
 
-  public T[] GetComponentsInChildren<T>() {
-    throw new NotImplementedException();
-  }
+  public void GetComponents(Type type, List<Component> results) => adaptee.GetComponents(type, results);
 
-  public T[] GetComponentsInChildren<T>(bool includeInactive) {
-    throw new NotImplementedException();
-  }
+  public T[] GetComponentsInChildren<T>() => adaptee.GetComponentsInChildren<T>();
 
-  public void GetComponentsInChildren<T>(List<T> results) {
-    throw new NotImplementedException();
-  }
+  public T[] GetComponentsInChildren<T>(bool includeInactive) => adaptee.GetComponentsInChildren<T>(includeInactive);
 
-  public void GetComponentsInChildren<T>(bool includeInactive, List<T> results) {
-    throw new NotImplementedException();
-  }
+  public void GetComponentsInChildren<T>(List<T> results) => adaptee.GetComponentsInChildren(results);
 
-  public Component[] GetComponentsInChildren(Type type, bool includeInactive = false) {
-    throw new NotImplementedException();
-  }
+  public void GetComponentsInChildren<T>(bool includeInactive, List<T> results)
+    => adaptee.GetComponentsInChildren(includeInactive, results);
 
-  public T[] GetComponentsInParent<T>() {
-    throw new NotImplementedException();
-  }
+  public Component[] GetComponentsInChildren(Type type, bool includeInactive = false)
+    => adaptee.GetComponentsInChildren(type, includeInactive);
 
-  public T[] GetComponentsInParent<T>(bool includeInactive) {
-    throw new NotImplementedException();
-  }
+  public T[] GetComponentsInParent<T>() => adaptee.GetComponentsInParent<T>();
 
-  public void GetComponentsInParent<T>(bool includeInactive, List<T> results) {
-    throw new NotImplementedException();
-  }
+  public T[] GetComponentsInParent<T>(bool includeInactive) => adaptee.GetComponentsInParent<T>(includeInactive);
 
-  public Component[] GetComponentsInParent(Type type, bool includeInactive = false) {
-    throw new NotImplementedException();
-  }
+  public void GetComponentsInParent<T>(bool includeInactive, List<T> results)
+    => adaptee.GetComponentsInParent(includeInactive, results);
 
-  public void SendMessage(string methodName, object value = null, SendMessageOptions options = SendMessageOptions.RequireReceiver) {
-    throw new NotImplementedException();
-  }
+  public Component[] GetComponentsInParent(Type type, bool includeInactive = false)
+    => adaptee.GetComponentsInParent(type, includeInactive);
 
-  public void SendMessageUpwards(string methodName, object value = null, SendMessageOptions options = SendMessageOptions.RequireReceiver) {
-    throw new NotImplementedException();
-  }
+  public void SendMessage(string methodName, object value = null,
+                          SendMessageOptions options = SendMessageOptions.RequireReceiver)
+    => adaptee.SendMessage(methodName, value, options);
 
-  public void SetActive(bool value) {
-    throw new NotImplementedException();
-  }
+  public void SendMessageUpwards(string methodName, object value = null,
+                                 SendMessageOptions options = SendMessageOptions.RequireReceiver)
+    => adaptee.SendMessageUpwards(methodName, value, options);
 
-  public bool TryGetComponent<T>(out T component) {
-    throw new NotImplementedException();
-  }
+  public void SetActive(bool value) => adaptee.SetActive(value);
 
-  public bool TryGetComponent(Type type, out Component component) {
-    throw new NotImplementedException();
-  }
+  public bool TryGetComponent<T>(out T component) => adaptee.TryGetComponent(out component);
 
-  public IGameObjectAdapter CreatePrimitive(PrimitiveType type) {
-    throw new NotImplementedException();
-  }
+  public bool TryGetComponent(Type type, out Component component) => adaptee.TryGetComponent(type, out component);
+
+  public IGameObjectAdapter CreatePrimitive(PrimitiveType type)
+    => new GameObjectAdapter(GameObject.CreatePrimitive(type));
 
   public IGameObjectAdapter Find(string name) {
-    throw new NotImplementedException();
+    var gameObj = GameObject.Find(name);
+    return gameObj != null ? new GameObjectAdapter(gameObj) : null;
   }
 
   public IGameObjectAdapter[] FindGameObjectsWithTag(string tag) {
-    throw new NotImplementedException();
+    var gameObjs = GameObject.FindGameObjectsWithTag(tag);
+    return Array.ConvertAll(gameObjs, gameObj => new GameObjectAdapter(gameObj) as IGameObjectAdapter);
   }
 
   public IGameObjectAdapter FindWithTag(string tag) {
-    throw new NotImplementedException();
+    var gameObj = GameObject.FindWithTag(tag);
+    return gameObj != null ? new GameObjectAdapter(gameObj) : null;
   }
 
-  public Scene GetScene(int instanceID) {
-    throw new NotImplementedException();
+  public Scene GetScene(int instanceID) => GameObject.GetScene(instanceID);
+
+  public void InstantiateGameObjects(int sourceInstanceID, int count, NativeArray<int> newInstanceIDs,
+                                     NativeArray<int> newTransformInstanceIDs, Scene destinationScene = default)
+    => GameObject.InstantiateGameObjects(sourceInstanceID, count, newInstanceIDs, newTransformInstanceIDs, destinationScene);
+
+  public void SetGameObjectsActive(NativeArray<int> instanceIDs, bool active)
+    => GameObject.SetGameObjectsActive(instanceIDs, active);
+
+  public void SetGameObjectsActive(ReadOnlySpan<int> instanceIDs, bool active)
+    => GameObject.SetGameObjectsActive(instanceIDs, active);
+
+  private IObjectAdapter[] ConvertToAdapters(UnityEngine.Object[] objs) {
+    var adapters = new IObjectAdapter[objs.Length];
+    for (int i = 0; i < objs.Length; i++) {
+      if (objs[i] is GameObject gameObj) adapters[i] = new GameObjectAdapter(gameObj);
+      else adapters[i] = null;
+    }
+
+    return adapters;
   }
 
-  public void InstantiateGameObjects(int sourceInstanceID, int count, NativeArray<int> newInstanceIDs, NativeArray<int> newTransformInstanceIDs, Scene destinationScene = default) {
-    throw new NotImplementedException();
-  }
+  private IObjectAdapter InstantiateInternal(IObjectAdapter original, Transform parent = null, bool instantiateInWorldSpace = false,
+                                             Vector3? position = null, Quaternion? rotation = null) {
+    if (original is GameObjectAdapter gameObjAdapter) {
+      GameObject instantiated;
+      if (position.HasValue && rotation.HasValue)
+        instantiated = parent != null ?
+          UnityEngine.Object.Instantiate(gameObjAdapter.adaptee, position.Value, rotation.Value, parent) :
+          UnityEngine.Object.Instantiate(gameObjAdapter.adaptee, position.Value, rotation.Value);
+      else
+        instantiated = parent != null ?
+          UnityEngine.Object.Instantiate(gameObjAdapter.adaptee, parent, instantiateInWorldSpace) :
+          UnityEngine.Object.Instantiate(gameObjAdapter.adaptee);
 
-  public void SetGameObjectsActive(NativeArray<int> instanceIDs, bool active) {
-    throw new NotImplementedException();
-  }
-
-  public void SetGameObjectsActive(ReadOnlySpan<int> instanceIDs, bool active) {
-    throw new NotImplementedException();
+      return new GameObjectAdapter(instantiated);
+    } else return null;
   }
 }
 

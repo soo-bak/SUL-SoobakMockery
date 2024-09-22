@@ -14,7 +14,7 @@ public class StringExtensionTests {
 
     // Act
     string result = original.Reverse();
-
+      
     // Assert
     Assert.AreEqual(expected, result);
   }
@@ -31,6 +31,7 @@ public class StringExtensionTests {
     // Assert
     Assert.AreEqual(expected, result);
   }
+
 }
 
 } // namespace

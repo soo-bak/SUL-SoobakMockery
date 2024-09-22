@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 
 namespace SUL.TestUtilities {
-
 public static class TestHelper {
   public static IEnumerator SimulateSceneTransition() {
     var originScene = SceneManager.GetActiveScene();

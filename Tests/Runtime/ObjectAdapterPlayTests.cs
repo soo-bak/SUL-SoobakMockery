@@ -1,19 +1,18 @@
-using SUL.Adapters;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using System;
 using System.Collections;
 using System.Linq;
+using SUL.TestUtilities;
 
-namespace SUL_Tests.Adapters {
+namespace SUL.Adapters {
 
 [TestFixture]
 [Category("Adapters")]
 public class ObjectAdapterPlayTests {
-  const string INACTIVE_GOBJ_NAME = "InactiveObject";
-  const string ACTIVE_GOBJ_NAME = "ActiveObject";
+  const string INACTIVE_GAMEOBJ_NAME = "InactiveObject";
+  const string ACTIVE_GAMEOBJ_NAME = "ActiveObject";
   const string TEST_OBJ_NAME = "TestObject";
   const string PARENT_OBJ_NAME = "Parent";
 
@@ -42,8 +41,8 @@ public class ObjectAdapterPlayTests {
       UnityEngine.Object.DestroyImmediate(adapter as UnityEngine.Object);
     adapter = null;
 
-    var allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
-    foreach (var obj in allObjects)
+    var foundObjs = UnityEngine.Object.FindObjectsOfType<GameObject>();
+    foreach (var obj in foundObjs)
       UnityEngine.Object.DestroyImmediate(obj);
 
     yield return null;
@@ -52,8 +51,7 @@ public class ObjectAdapterPlayTests {
   [UnityTest]
   public IEnumerator G_ObjectExists_W_DestroyCalledWithDelay_T_ObjectIsDestroyedAfterDelay() {
     // Arrange
-    const float delaySec = 0.1f;
-    const float afterDelaySec = 0.2f;
+    const float delaySec = 0.1f, afterDelaySec = 0.2f;
 
     // Act
     adapter.Destroy(adapter, delaySec);
@@ -69,7 +67,7 @@ public class ObjectAdapterPlayTests {
   public IEnumerator G_ObjectExist_W_DontDestroyOnLoadCalledAndSceneTransitions_T_ObjectPersists() {
     // Act
     adapter.DontDestroyOnLoad(adapter);
-    yield return SimulateSceneTransition();
+    yield return TestHelper.SimulateSceneTransition();
 
     // Assert
     Assert.IsFalse(testObj == null);
@@ -78,7 +76,7 @@ public class ObjectAdapterPlayTests {
   [UnityTest]
   public IEnumerator G_InactiveObjectWithComponent_W_FindObjectOfTypeCalledWithIncludeInactive_T_ReturnsCorrectComponent() {
     // Arrange
-    var inactiveObj = new GameObject(INACTIVE_GOBJ_NAME);
+    var inactiveObj = new GameObject(INACTIVE_GAMEOBJ_NAME);
     inactiveObj.SetActive(false);
     var testCmp = inactiveObj.AddComponent<TestComponent>();
 
@@ -97,7 +95,7 @@ public class ObjectAdapterPlayTests {
   [UnityTest]
   public IEnumerator G_InactiveObjectWithComponent_W_FindObjectOfTypeCalledWithTypeAndIncludeInactive_T_ReturnsCorrectObjectAdapter() {
     // Arrange
-    var inactiveObj = new GameObject(INACTIVE_GOBJ_NAME);
+    var inactiveObj = new GameObject(INACTIVE_GAMEOBJ_NAME);
     inactiveObj.SetActive(false);
     inactiveObj.AddComponent<TestComponent>();
     yield return null;
@@ -109,7 +107,7 @@ public class ObjectAdapterPlayTests {
     // Assert
     Assert.IsNotNull(foundObj);
     Assert.IsInstanceOf<IObjectAdapter>(foundObj);
-    Assert.AreEqual(inactiveObj.name, foundObj.Name);
+    Assert.AreEqual(inactiveObj.name, foundObj.name);
 
     // CleanUp
     UnityEngine.Object.Destroy(inactiveObj);
@@ -118,12 +116,12 @@ public class ObjectAdapterPlayTests {
   [UnityTest]
   public IEnumerator G_ActiveAndInactiveObjectsWithComponent_W_FindObjectsOfTypeCalledWithIncludeInactive_T_ReturnsAllComponents() {
     // Arrange
-    var activeObj = new GameObject(ACTIVE_GOBJ_NAME);
-    var inactiveObj = new GameObject(INACTIVE_GOBJ_NAME);
+    var activeObj = new GameObject(ACTIVE_GAMEOBJ_NAME);
+    var inactiveObj = new GameObject(INACTIVE_GAMEOBJ_NAME);
     inactiveObj.SetActive(false);
 
-    var testCmp_1 = activeObj.AddComponent<TestComponent>();
-    var testCmp_2 = inactiveObj.AddComponent<TestComponent>();
+    var testCmpF = activeObj.AddComponent<TestComponent>();
+    var testCmpS = inactiveObj.AddComponent<TestComponent>();
 
     // Act
     var foundCmps = adapter.FindObjectsOfType<TestComponent>(true);
@@ -132,8 +130,8 @@ public class ObjectAdapterPlayTests {
     // Assert
     Assert.IsNotNull(foundCmps);
     Assert.AreEqual(2, foundCmps.Length);
-    Assert.IsTrue(foundCmps.Contains(testCmp_1));
-    Assert.IsTrue(foundCmps.Contains(testCmp_2));
+    Assert.IsTrue(foundCmps.Contains(testCmpF));
+    Assert.IsTrue(foundCmps.Contains(testCmpS));
 
     // CleanUp
     UnityEngine.Object.Destroy(activeObj);
@@ -143,8 +141,8 @@ public class ObjectAdapterPlayTests {
   [UnityTest]
   public IEnumerator G_ActiveAndInactiveObjectsWithComponent_W_FindObjectsOfTypeCalledWithTypeAndIncludeInactive_T_ReturnsAllObjectAdapters() {
     // Arrange
-    var activeObj = new GameObject(ACTIVE_GOBJ_NAME);
-    var inactiveObj = new GameObject(INACTIVE_GOBJ_NAME);
+    var activeObj = new GameObject(ACTIVE_GAMEOBJ_NAME);
+    var inactiveObj = new GameObject(INACTIVE_GAMEOBJ_NAME);
     inactiveObj.SetActive(false);
 
     activeObj.AddComponent<TestComponent>();
@@ -158,8 +156,8 @@ public class ObjectAdapterPlayTests {
     Assert.IsNotNull(foundObjs);
     Assert.AreEqual(2, foundObjs.Length);
     Assert.IsTrue(foundObjs.All(obj => obj is IObjectAdapter));
-    Assert.IsTrue(foundObjs.Any(obj => obj.Name == ACTIVE_GOBJ_NAME));
-    Assert.IsTrue(foundObjs.Any(obj => obj.Name == INACTIVE_GOBJ_NAME));
+    Assert.IsTrue(foundObjs.Any(obj => obj.name == ACTIVE_GAMEOBJ_NAME));
+    Assert.IsTrue(foundObjs.Any(obj => obj.name == INACTIVE_GAMEOBJ_NAME));
 
     // CleanUp
     UnityEngine.Object.Destroy(activeObj);
@@ -191,14 +189,14 @@ public class ObjectAdapterPlayTests {
     yield return null;
 
     // Assert
-    var newGameObject = GameObject.Find(newAdapter.Name);
+    var foundGameObj = GameObject.Find(newAdapter.name);
     Assert.IsNotNull(newAdapter);
-    Assert.AreEqual(parentObj.transform, newGameObject.transform.parent);
+    Assert.AreEqual(parentObj.transform, foundGameObj.transform.parent);
 
     // CleanUp
     UnityEngine.Object.Destroy(parentObj);
     adapter.Destroy(newAdapter);
-    GameObject.DestroyImmediate(newGameObject);
+    GameObject.DestroyImmediate(foundGameObj);
   }
 
   [UnityTest]
@@ -210,14 +208,14 @@ public class ObjectAdapterPlayTests {
 
     // Assert
     Assert.IsNotNull(newAdapter);
-    var newGameObject = GameObject.Find(newAdapter.Name);
-    Assert.IsNotNull(newGameObject);
-    Assert.AreEqual(parentObj.transform, newGameObject.transform.parent);
+    var foundGameObj = GameObject.Find(newAdapter.name);
+    Assert.IsNotNull(foundGameObj);
+    Assert.AreEqual(parentObj.transform, foundGameObj.transform.parent);
 
     // CleanUp
     UnityEngine.Object.Destroy(parentObj);
     adapter.Destroy(newAdapter);
-    GameObject.DestroyImmediate(newGameObject);
+    GameObject.DestroyImmediate(foundGameObj);
   }
 
   [UnityTest]
@@ -228,46 +226,37 @@ public class ObjectAdapterPlayTests {
 
     // Assert
     Assert.IsNotNull(newAdapter);
-    var newGameObject = GameObject.Find(newAdapter.Name);
-    Assert.IsNotNull(newGameObject);
-    Assert.AreEqual(INST_POS, newGameObject.transform.position);
-    Assert.AreEqual(INST_ROT.ToString(), newGameObject.transform.rotation.ToString());
+    var foundGameObj = GameObject.Find(newAdapter.name);
+    Assert.IsNotNull(foundGameObj);
+    Assert.AreEqual(INST_POS, foundGameObj.transform.position);
+    Assert.AreEqual(INST_ROT.ToString(), foundGameObj.transform.rotation.ToString());
 
     // CleanUp
     adapter.Destroy(newAdapter);
-    GameObject.DestroyImmediate(newGameObject);
+    GameObject.DestroyImmediate(foundGameObj);
   }
 
   [UnityTest]
   public IEnumerator G_ObjectAdapter_W_InstantiateWithPositionRotationAndParent_T_ReturnsNewObjectAdapterWithCorrectTransformAndParent() {
     // Arrange
     var parentObj = new GameObject(PARENT_OBJ_NAME);
-
+    
     // Act
     var newAdapter = adapter.Instantiate(adapter, INST_POS, INST_ROT, parentObj.transform);
     yield return null;
 
     // Assert
     Assert.IsNotNull(newAdapter);
-    var newGameObject = GameObject.Find(newAdapter.Name);
-    Assert.IsNotNull(newGameObject);
-    Assert.AreEqual(INST_POS, newGameObject.transform.localPosition);
-    Assert.AreEqual(INST_ROT.ToString(), newGameObject.transform.localRotation.ToString());
-    Assert.AreEqual(parentObj.transform, newGameObject.transform.parent);
+    var foundGameObj = GameObject.Find(newAdapter.name);
+    Assert.IsNotNull(foundGameObj);
+    Assert.AreEqual(INST_POS, foundGameObj.transform.localPosition);
+    Assert.AreEqual(INST_ROT.ToString(), foundGameObj.transform.localRotation.ToString());
+    Assert.AreEqual(parentObj.transform, foundGameObj.transform.parent);
 
     // CleanUp
     UnityEngine.Object.Destroy(parentObj);
     adapter.Destroy(newAdapter);
-    GameObject.DestroyImmediate(newGameObject);
-  }
-
-  private IEnumerator SimulateSceneTransition() {
-    var originScene = SceneManager.GetActiveScene();
-    var tmpSceneName = "TempScene";
-    var tmpScene = SceneManager.CreateScene(tmpSceneName);
-    yield return SceneManager.SetActiveScene(tmpScene);
-    yield return SceneManager.UnloadSceneAsync(tmpScene);
-    yield return SceneManager.SetActiveScene(originScene);
+    GameObject.DestroyImmediate(foundGameObj);
   }
 }
 

@@ -5,8 +5,8 @@ using UnityEngine;
 namespace SUL.Adapters {
 
 public interface IObjectAdapter {
-  string Name { get; set; }
-  HideFlags HideFlags { get; set; }
+  string name { get; set; }
+  HideFlags hideFlags { get; set; }
 
   int GetInstanceID();
   string ToString();
@@ -34,12 +34,12 @@ public class ObjectAdapter : IObjectAdapter {
   public ObjectAdapter(UnityEngine.Object adaptee)
     => this.adaptee = adaptee;
 
-  public string Name {
+  public string name {
     get => adaptee.name;
     set => adaptee.name = value;
   }
 
-  public HideFlags HideFlags {
+  public HideFlags hideFlags {
     get => adaptee.hideFlags;
     set => adaptee.hideFlags = value;
   }

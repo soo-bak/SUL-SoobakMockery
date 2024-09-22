@@ -1,17 +1,17 @@
 using System;
 
-namespace SUL {
+namespace SUL.Utilities {
 
-  public static class StringExtensions {
-    public static string Reverse(this string str) {
-      if (string.IsNullOrEmpty(str))
-        return str;
+public static class StringExtensions {
+  public static string Reverse(this string str) {
+    if (string.IsNullOrEmpty(str))
+      return str;
 
-      char[] charArr = str.ToCharArray();
-      Array.Reverse(charArr);
+    char[] charArr = str.ToCharArray();
+    Array.Reverse(charArr);
 
-      return new string(charArr);
-    }
+    return new string(charArr);
   }
-
 }
+
+} // namespace

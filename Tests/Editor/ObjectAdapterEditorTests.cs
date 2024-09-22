@@ -1,11 +1,9 @@
-using SUL.Adapters;
 using NUnit.Framework;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Linq;
 
-namespace SUL_Tests.Adapters {
+namespace SUL.Adapters {
 
 [TestFixture]
 [Category("Adapters")]
@@ -18,6 +16,8 @@ public class ObjectAdapterEditorTests {
 
   [SetUp]
   public void SetUp() {
+    EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+
     testObj = new GameObject(TEST_OBJ_NAME);
     adapter = new ObjectAdapter(testObj);
   }
@@ -32,19 +32,18 @@ public class ObjectAdapterEditorTests {
       Object.DestroyImmediate(adapter as Object);
     adapter = null;
 
-    var testScene = SceneManager.GetActiveScene();
-    EditorSceneManager.CloseScene(testScene, true);
+    EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
   }
 
   [Test]
   public void G_ObjectAdapter_W_GetNameAndHideFlags_T_ReturnsCorrectValues() {
     // Act
-    adapter.Name = NEW_OBJ_NAME;
-    adapter.HideFlags = HideFlags.HideInHierarchy;
+    adapter.name = NEW_OBJ_NAME;
+    adapter.hideFlags = HideFlags.HideInHierarchy;
 
     // Assert
-    Assert.AreEqual(NEW_OBJ_NAME, adapter.Name);
-    Assert.AreEqual(HideFlags.HideInHierarchy, adapter.HideFlags);
+    Assert.AreEqual(NEW_OBJ_NAME, adapter.name);
+    Assert.AreEqual(HideFlags.HideInHierarchy, adapter.hideFlags);
   }
 
   [Test]

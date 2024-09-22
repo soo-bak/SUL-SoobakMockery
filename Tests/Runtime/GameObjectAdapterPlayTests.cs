@@ -37,7 +37,7 @@ public class GameObjectAdapterPlayTests {
   private GameObject testGo = null;
 
   [OneTimeSetUp]
-  public void OneTimeSetup() { 
+  public void OneTimeSetup() {
     EditorSettings.enterPlayModeOptionsEnabled = true;
     EditorSettings.enterPlayModeOptions = EnterPlayModeOptions.DisableDomainReload;
   }
@@ -158,7 +158,7 @@ public class GameObjectAdapterPlayTests {
   public IEnumerator G_GameObjectAdapter_W_SendMessage_T_MessageIsSent() {
     // Arrange
     var mockBehaviour = testGo.AddComponent<MonobehaviorSpy>();
-            
+
     // Act
     goAdapter.SendMessage(TEST_METHOD_NAME, TEST_PARAMETER_NAME, SendMessageOptions.RequireReceiver);
     yield return null; // Wait for a frame to ensure the message is processed
@@ -208,7 +208,7 @@ public class GameObjectAdapterPlayTests {
     // Clean up
     Object.Destroy(childObj);
   }
-  
+
   [UnityTest]
   public IEnumerator G_GameObjectAdapter_W_FindWithTag_T_ReturnsCorrectGameObjectAdapter() {
     // Arrange
@@ -254,16 +254,14 @@ public class GameObjectAdapterPlayTests {
     var tagManager = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
     var targetPropName = "tags";
     var tagsProp = tagManager.FindProperty(targetPropName);
-            
+
     bool isFound = false;
     for (int i = 0; i < tagsProp.arraySize; i++) {
       SerializedProperty t = tagsProp.GetArrayElementAtIndex(i);
-      if (t.stringValue.Equals(tagName)) {
+      if (t.stringValue.Equals(tagName))
         isFound = true;
-        break ;
-      }
     }
-            
+
     if (!isFound) {
       tagsProp.InsertArrayElementAtIndex(0);
       SerializedProperty newTag = tagsProp.GetArrayElementAtIndex(0);
